@@ -1,0 +1,36 @@
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+//const User = require('../models/User');
+
+//const User = require('../models/User');
+
+const db = require('../models');
+const User = db.users;
+const Op = db.Sequelize.Op;
+
+exports.signup = (req, res, next) => {
+	console.log(req.query.pseudo);
+	console.log(req.query.email);
+	console.log(Date.now());
+	console.log(bcrypt.hash(req.query.password, 10));
+	bcrypt.hash(req.query.password, 10)
+		.then(hash => {
+			const user = new User({
+				pseudo: req.query.pseudo,
+				email: req.query.email,
+				password: hash,
+				createdAt: new Date.now(),
+				updatedAt: new Date.now()
+			});
+			console.log(user);
+			console.log('euuuuh?');
+			User.create({pseudo, email, password, createdAt, updatedAt})
+				.then(() => res.status(200).json({ message: 'Utilisateur crée' }))
+				.catch(error => res.statut(400).json ({ error }));
+		})
+		.catch(error => res.status(500).json({ error }));
+};
+
+exports.login = (req, res, next) => {
+	console.log('logiiiin');
+}
