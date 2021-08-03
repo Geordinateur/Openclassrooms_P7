@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 //const Sauce = require('./models/Sauce');
 //const saucesRoutes = require('./routes/sauces');
 const userRoutes = require('./routes/user');
+const gifRoutes = require('./routes/gif');
 
 const app = express();
 
@@ -20,9 +21,7 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 
 app.use('/api/user', userRoutes);
-
-
-
+app.use('/api/gif', gifRoutes);
 
 const db = require("./models");
 
