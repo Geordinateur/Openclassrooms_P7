@@ -1,33 +1,32 @@
 const db = require('../models');
-const Gif = db.gifs;
+const Blog = db.blogs;
 const Op = db.Sequelize.Op;
 const fs = require('fs');
 
 exports.create = (req, res, next) => {
-	const Gifing = Gif.build({
+	const Bloging = Blog.build({
 		title: req.body.title,
+		content: req.body.content,
 		//		url: `${req.protocol}://${req.get('host')}/images/${req.file.filname}`
 		//		url: req.body.url,
-		author: 'a renseigner',
-		//author: userId,
+		author: req.body.author,
 		createdAt : Date.now(),
 		updatedAt : Date.now()
 	});
-	Gifing.save()
+	Bloging.save()
 		.then(() => res.status(201).json({ message: 'Objet enregistré!' }))
 		.catch(error => res.status(400).json({ error: error.errors[0]['message'] }));
 };
 
 exports.update = (req, res, next) => {
-	Gif.findByPk(req.params.id)
-		.then(gif => {
-			gif.title = req.body.title;
-			//			gif.url = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-			//			gif.url = req.body.url;
-		gif.author = 'a renseigner';
-		//gif.author = userId;
-			gif.updatedAt = Date.now();
-			gif.save()
+	Blog.findByPk(req.params.id)
+		.then(blog => {
+			blog.title = req.body.title;
+			//			blog.url = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+			//			blog.url = req.body.url;
+			blog.author = req.body.author;
+			blog.updatedAt = Date.now();
+			blog.save()
 				.then(() => res.status(201).json({ message: 'Objet modifié!' }))
 				.catch(error => res.status(500).json({ error: error.errors[0]['message'] }));
 		})
@@ -36,12 +35,12 @@ exports.update = (req, res, next) => {
 
 exports.delete = (req, res, next) => {
 	console.log(req.params.id);
-	Gif.findByPk(req.params.id)
-		.then(gif => {
-			if(gif !== null) {
+	Blog.findByPk(req.params.id)
+		.then(blog => {
+			if(blog !== null) {
 				fs.unlink(`images/${filename}`, () => {
-					const filename = gif.url.split('/images/')[1];
-					Gif.destroy({where: { id: req.params.id}})
+					const filename = blog.url.split('/images/')[1];
+					Blog.destroy({where: { id: req.params.id}})
 						.then(() => res.status(201).json({ message: 'Objet supprimé!' }))
 						.catch(error => res.status(500).json({ error }));
 				});
@@ -53,13 +52,18 @@ exports.delete = (req, res, next) => {
 };
 
 exports.getOne = (req, res, next) => {
-	Gif.findByPk(req.params.id)
-		.then(gif => res.status(200).json(gif))
+	Blog.findByPk(req.params.id)
+		.then(blog => res.status(200).json(blog))
 		.catch(error => res.status(400).json({ error }));
 };
 
 exports.getAll = (req, res, next) => {
-	Gif.findAll()
-		.then(gifs => res.status(200).json(gifs))
+	Blog.findAll()
+		.then(blogs => {
+			if(blogs.length === 0) {
+				res.status(404).json({ error: 'Aucun contenu pour le moment.' });
+			}
+			res.status(200).json(blogs)
+		})
 		.catch(error => res.status(400).json({ error }));
 };

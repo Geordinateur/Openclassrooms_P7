@@ -21,5 +21,7 @@ db.sequelize = sequelize;
 
 db.users = require("./User.js")(sequelize, Sequelize);
 db.gifs = require("./Gif.js")(sequelize, Sequelize);
+db.blogs = require("./Blog.js")(sequelize, Sequelize);
+db.comments = require("./Comment.js")(sequelize, Sequelize);
 
 module.exports = db;

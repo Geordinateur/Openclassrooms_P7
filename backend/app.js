@@ -8,6 +8,8 @@ const bodyParser = require('body-parser');
 //const saucesRoutes = require('./routes/sauces');
 const userRoutes = require('./routes/user');
 const gifRoutes = require('./routes/gif');
+const blogRoutes = require('./routes/blog');
+const commentRoutes = require('./routes/comment');
 
 const app = express();
 
@@ -22,6 +24,8 @@ app.use(bodyParser.json());
 
 app.use('/api/user', userRoutes);
 app.use('/api/gif', gifRoutes);
+app.use('/api/blog', blogRoutes);
+app.use('/api/comment', commentRoutes);
 
 const db = require("./models");
 

@@ -10,7 +10,9 @@ exports.signup = (req, res, next) => {
 	console.log(req.body.pseudo);
 	User.findOne({where: { email: req.body.email }})
 		.then(user =>{
-			if(user === null) {
+			if(user !== null) {
+				res.status(500).json({ message: 'error, email already use!' });
+			}
 				//cryptage du mot de passe, une réponse promise
 				bcrypt.genSalt(saltRounds, function(err, salt) {
 					bcrypt.hash(req.body.password, salt, function(err, hash) {
@@ -24,39 +26,36 @@ exports.signup = (req, res, next) => {
 					});
 				});
 				res.status(400).json({ message: 'success, welcome at the new members!' });
-			} else {
-				res.status(500).json({ message: 'error, email already use!' });
-				};
 		})
 		.catch(error => res.status(500).json({ error }));
 };
 
-	exports.login = (req, res, next) => {
-		console.log('login');
-		User.findOne({
-			where: {email: req.body.email}
+exports.login = (req, res, next) => {
+//	console.log('login');
+	User.findOne({
+		where: {email: req.body.email}
+	})
+		.then(user => {
+			if(!user) {
+				return res.status(401).json({ error: 'Utilisateur non trouvé' });
+			}
+//			console.log(req.body.password);
+//			console.log(user.password);
+			bcrypt.compare(req.body.password, user.password)
+				.then(valid  => {
+					if(!valid) {
+						return res.status(401).json({ error: 'Mot de passe incorrect!' });
+					}
+					res.status(200).json({
+						userId: user._id,
+						token: jwt.sign(
+							{ userId: user._id },
+							'RANDOM_TOKEN_SECRET',
+							{ expiresIn: '24h' }
+						)
+					});
+				})
+				.catch(error => res.status(500).json({ error }));
 		})
-			.then(user => {
-				if(!user) {
-					return res.status(401).json({ error: 'Utilisateur non trouvé' });
-				}
-				console.log(req.body.password);
-				console.log(user.password);
-				bcrypt.compare(req.body.password, user.password)
-					.then(valid  => {
-						if(!valid) {
-							return res.status(401).json({ error: 'Mot de passe incorrect!' });
-						}
-						res.status(200).json({
-							userId: user._id,
-							token: jwt.sign(
-								{ userId: user._id },
-								'RANDOM_TOKEN_SECRET',
-								{ expiresIn: '24h' }
-							)
-						});
-					})
-					.catch(error => res.status(500).json({ error }));
-			})
-			.catch(error => res.status(500).json({ error }));
-	}
+		.catch(error => res.status(500).json({ error }));
+}
