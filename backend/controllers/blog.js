@@ -1,5 +1,7 @@
 const db = require('../models');
 const Blog = db.blogs;
+const Comment = db.comments;
+const User = db.users;
 const Op = db.Sequelize.Op;
 const fs = require('fs');
 
@@ -53,7 +55,14 @@ exports.delete = (req, res, next) => {
 
 exports.getOne = (req, res, next) => {
 	Blog.findByPk(req.params.id)
-		.then(blog => res.status(200).json(blog))
+		.then(blog => {
+			Comment.findAll({where: {link: blog.id}})
+				.then(comment => { 
+					console.log(blog);
+					console.log(comment);
+					res.status(200).json()})
+				.catch(error => res.status(400).json({ error }));
+		})
 		.catch(error => res.status(400).json({ error }));
 };
 

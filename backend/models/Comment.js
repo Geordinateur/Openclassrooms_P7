@@ -1,5 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
   const Comment = sequelize.define("comments", {
+    id: {
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true,
+    },
     content: {
       type: Sequelize.STRING,
       allowNull: false
@@ -8,7 +14,12 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING
     },
     link: {
-      type: Sequelize.STRING
+      allowNull: false,
+      type: Sequelize.INTEGER,
+      references: {
+        model: 'blogs',
+        key: 'id'
+      }
     },
     replyAt: {
       type: Sequelize.STRING

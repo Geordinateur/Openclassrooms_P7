@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const db = require('../models');
 const Comment = db.comments;
+const Blog = db.blog;
 const Op = db.Sequelize.Op;
 const { QueryTypes } = require('sequelize');
 
@@ -20,10 +21,5 @@ exports.create = (req, res, next) => {
 };
 
 exports.get = (req, res, next) => {
-	async function ontest() {
-const users = await sequelize.query("SELECT * FROM `users`", { type: QueryTypes.SELECT });
-// We didn't need to destructure the result here - the results were returned directly
-		return users
-	}
-	console.log(ontest());
+	console.log('on affiche le commentaire avec l\'id demandé, rien de compliqué??!');
 };
