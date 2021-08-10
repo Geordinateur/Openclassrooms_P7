@@ -16,9 +16,13 @@ module.exports = (sequelize, Sequelize) => {
     url: {
       type: Sequelize.STRING,
     },
-    author: {
-      type: Sequelize.STRING,
-      allowNull: false
+    userId: {
+      allowNull: false,
+      type: Sequelize.INTEGER,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     createdAt: {
       type: Sequelize.DATE

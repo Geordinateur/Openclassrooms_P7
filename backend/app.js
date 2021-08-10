@@ -29,7 +29,9 @@ app.use('/api/comment', commentRoutes);
 
 const db = require("./models");
 
-db.sequelize.sync();
+db.sequelize.sync({ force: true }).then(() => {
+  console.log("Drop and re-sync db.");
+});
 
 //app.use('/images', express.static(path.join(__dirname, 'images')));
 //app.use('/api/sauces', saucesRoutes);

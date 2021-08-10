@@ -11,7 +11,7 @@ exports.create = (req, res, next) => {
 		content: req.body.content,
 		//		url: `${req.protocol}://${req.get('host')}/images/${req.file.filname}`
 		//		url: req.body.url,
-		author: req.body.author,
+		userId: req.body.userId,
 		createdAt : Date.now(),
 		updatedAt : Date.now()
 	});
@@ -26,7 +26,7 @@ exports.update = (req, res, next) => {
 			blog.title = req.body.title;
 			//			blog.url = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
 			//			blog.url = req.body.url;
-			blog.author = req.body.author;
+			blog.userId = req.body.userId;
 			blog.updatedAt = Date.now();
 			blog.save()
 				.then(() => res.status(201).json({ message: 'Objet modifié!' }))

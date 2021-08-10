@@ -7,7 +7,7 @@ const Op = db.Sequelize.Op;
 
 exports.signup = (req, res, next) => {
 	//recherche si l'email est déjà présente dans la DB
-	console.log(req.body.pseudo);
+	console.log(req.body.user);
 	User.findOne({where: { email: req.body.email }})
 		.then(user =>{
 			if(user !== null) {
@@ -17,7 +17,7 @@ exports.signup = (req, res, next) => {
 				bcrypt.genSalt(saltRounds, function(err, salt) {
 					bcrypt.hash(req.body.password, salt, function(err, hash) {
 						const saving = User.create({
-							pseudo: req.body.pseudo,
+							user: req.body.user,
 							email: req.body.email,
 							password: hash,
 							createdAt: Date.now(),
