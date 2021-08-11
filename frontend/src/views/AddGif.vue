@@ -37,7 +37,7 @@
       </b-form-group>
           <b-button type="submit" variant="primary">Submit</b-button>
           <b-button type="reset" variant="danger">Reset</b-button>
-
+          <p>{{$store.state.userId}}</p>
     </b-form>
   </div>
 </template>
@@ -64,7 +64,7 @@ export default {
         .post('http://localhost:3000/api/gif', {
           title: this.form.title,
           url: this.form.url,
-          userId: 1
+          userId: localStorage.userId
         })
         .then(response => {
           //          axios.defaults.headers.common['Authorization'] = response.data.token;
@@ -72,7 +72,7 @@ export default {
           this.status = 'success';
           this.show = false;
           console.log(response);
-          document.location.href="../user";
+          setTimeout(function(){ document.location.href="../user" }, 3000);
         })
         .catch(error => {
           this.status = 'error';

@@ -3,7 +3,7 @@
     <Login />
   </div>
   <div v-else-if="myToken">
-    <h1>Bienvenue {{user.user}} dans votre espace membre</h1>
+    <h1>Bienvenue {{ this.user.user }} dans votre espace membre</h1>
     <ul>
       <li><a href="./user/blog">Ajouter un article</a></li>
       <li><a href="./user/gif">Ajouter une image Gif</a></li>
@@ -32,19 +32,20 @@ export default {
       axios
         .get('http://localhost:3000/api/user')
         .then(response => {
-          const toParse = JSON.stringify(response.data.user);
-          this.user = JSON.parse(toParse);
+          const toParse = JSON.stringify(response.data.user)
+          this.user = JSON.parse(toParse)
+          console.log(this.user)
         })
         .catch(error => {
-          this.status = 'error';
-          console.log(error);
+          this.status = 'error'
+          console.log(error)
         });
   },
   methods: {
     logout() {
       event.preventDefault()
       localStorage.clear()
-      document.location.href="./";
+      document.location.href="./"
     },
   },
   mounted() {

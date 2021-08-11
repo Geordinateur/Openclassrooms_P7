@@ -67,15 +67,15 @@ export default {
 //          },
           title: this.form.title,
           content: this.form.content,
-          userId: 1
+          userId: localStorage.userId
         })
         .then(response => {
           //          axios.defaults.headers.common['Authorization'] = response.data.token;
           //          localStorage.setItem('userToken', response.data.token);
           this.status = 'success';
           this.show = false;
-          console.log(response);
-          document.location.href="./user";
+          console.log('heee ' + response);
+          setTimeout(function(){ document.location.href="../user" }, 3000);
         })
         .catch(error => {
           this.status = 'error';

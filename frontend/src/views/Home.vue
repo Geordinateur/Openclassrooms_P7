@@ -1,38 +1,47 @@
 <template>
   <div class="home">
-    wesh
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div v-for="article in blog" v-bind:key="article">
+      <b-card
+        :title="article.title"
+        tag="article"
+        style="max-width: 100%;"
+        class="mb-2"
+        >
+        <b-card-text>
+          {{ article.content }}
+        </b-card-text>
+
+        <b-button href="#" variant="primary">Go somewhere</b-button>
+      </b-card>
+    </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-import axios from 'axios'
+  import axios from 'axios'
 
 export default {
   name: 'Home',
-  components: {
-    HelloWorld
+  data() {
+    return {
+      blog: ''
+    }
   },
   methods: {
-    seeBlog() {
-      axios
-        .get('http://localhost:3000/api/blog')
-        .then(response => {
-          this.status = 'success';
-          this.show = false;
-          console.log(response.user);
-          document.location.href="./user";
-        })
-        .catch(error => {
-          this.status = 'error';
-          //          localStorage.removeItem('userToken');
-          console.log(error);
-        });
-
-    },
-  }
+  },
+  created() {
+    axios.defaults.headers.common['Authorization'] = localStorage.userToken
+    axios
+      .get('http://localhost:3000/api/blog')
+      .then(response => {
+        const toParse = JSON.stringify(response.data)
+        this.blog = JSON.parse(toParse)
+      })
+      .catch(error => {
+        this.status = 'error'
+        console.log(error)
+      });
+  },
 }
 </script>

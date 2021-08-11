@@ -4,7 +4,7 @@
       <b-card-text>Votre mot de passe ou identifiants sont incorrects.</b-card-text>
     </b-card>
     <b-card v-else-if="status === 'successLogin'" bg-variant="success" text-variant="white" class="text-center m-1">
-      <b-card-text>Bienvenue.</b-card-text>
+      <b-card-text>Votre identification à été réaliser avec succès, vous allez être rediriger...</b-card-text>
     </b-card>
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
       <b-form-group
@@ -77,14 +77,16 @@ export default {
           password: this.form.password
         })
         .then(response => {
-          axios.defaults.headers.common['Authorization'] = response.data.token;
-          localStorage.setItem('userToken', response.data.token);
+          axios.defaults.headers.common['Authorization'] = response.data.token
+          localStorage.setItem('userToken', response.data.token)
+          localStorage.setItem('userId', response.data.userId)
           this.status = 'successLogin' 
-          this.show = false;
-          document.location.href="./user";
+          this.show = false
+          setTimeout(function(){ document.location.href="./user" }, 5000);
         })
         .catch(() => {
           this.status = 'badLogin';
+          this.show = true
           localStorage.removeItem('userToken') 
         });
     },
@@ -99,7 +101,7 @@ export default {
       this.$nextTick(() => {
         this.show = true
       });
-    },
-  },
+    }
+  }
 }
 </script>

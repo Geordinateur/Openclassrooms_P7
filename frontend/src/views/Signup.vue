@@ -89,6 +89,7 @@ export default {
 //          localStorage.setItem('userToken', response.data.token);
           this.status = 'success';
           this.show = false;
+          setTimeout(function(){ document.location.href="./" }, 3000);
           console.log(response);
         })
         .catch(error => {
