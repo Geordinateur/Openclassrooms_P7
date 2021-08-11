@@ -1,30 +1,44 @@
 <template>
-  <div v-if="!myToken" id="login">
-    <b-card v-if="status === 'badLogin'" bg-variant="danger" text-variant="white" class="text-center m-1">
-      <b-card-text>Votre mot de passe ou identifiants sont incorrects.</b-card-text>
-    </b-card>
-    <b-card v-else-if="status === 'successLogin'" bg-variant="success" text-variant="white" class="text-center m-1">
-      <b-card-text>Bienvenue.</b-card-text>
-    </b-card>
+  <div id="login">
+        <b-card v-if="status === 'error'" bg-variant="danger" text-variant="white" class="text-center m-1">
+          <b-card-text>Erreur.</b-card-text>
+        </b-card>
+        <b-card v-else-if="status === 'success'" bg-variant="success" text-variant="white" class="text-center m-1">
+          <b-card-text>Votre inscription c'est dérouler avec succes, vous pouvez dès maintenant vous connecter.</b-card-text>
+        </b-card>
     <b-form @submit="onSubmit" @reset="onReset" v-if="show">
       <b-form-group
         id="input-group-1"
-        label="Email address:"
+        label="Username:"
         label-for="input-1"
         description="We'll never share your email with anyone else."
         >
         <b-form-input
           id="input-1"
+          v-model="form.user"
+          type="text"
+          placeholder="Enter username"
+          required
+          ></b-form-input>
+      </b-form-group>
+       <b-form-group
+        id="input-group-2"
+        label="Email address:"
+        label-for="input-1"
+        description="We'll never share your email with anyone else."
+        >
+        <b-form-input
+          id="input-2"
           v-model="form.email"
           type="email"
           placeholder="Enter email"
           required
           ></b-form-input>
       </b-form-group>
-        <b-form-group 
-          id="input-group-2" 
+       <b-form-group 
+          id="input-group-3" 
           label="Password" 
-          label-for="input-2"
+          label-for="input-3"
           description="Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji."
           >
           <b-form-input 
@@ -37,21 +51,13 @@
           <b-form-text id="password-help-block">
           </b-form-text>
         </b-form-group>
-        <b-form-group id="input-group-4" v-slot="{ ariaDescribedby }">
-          <b-form-checkbox-group
-            v-model="form.saved"
-            id="checkboxes-4"
-            :aria-describedby="ariaDescribedby"
-            >
-            <b-form-checkbox value="save">Se souvenir de moi</b-form-checkbox>
-          </b-form-checkbox-group>
-        </b-form-group>
         <b-button type="submit" variant="primary">Submit</b-button>
         <b-button type="reset" variant="danger">Reset</b-button>
-        <b-button b-link href="./user/signup" variant="success">Inscription</b-button>
+
     </b-form>
   </div>
 </template>
+
 <script>
 import axios from 'axios';
 
@@ -61,6 +67,7 @@ export default {
       status: '', 
       myToken: '',
       form: {
+        user: '',
         email: '',
         password: '',
         saved: []
@@ -72,27 +79,29 @@ export default {
     onSubmit(event) {
       event.preventDefault()
       axios
-        .post('http://localhost:3000/api/user/login', {
+        .post('http://localhost:3000/api/user/signup', {
+          user: this.form.user,
           email: this.form.email,
           password: this.form.password
         })
         .then(response => {
-          axios.defaults.headers.common['Authorization'] = response.data.token;
-          localStorage.setItem('userToken', response.data.token);
-          this.status = 'successLogin' 
+//          axios.defaults.headers.common['Authorization'] = response.data.token;
+//          localStorage.setItem('userToken', response.data.token);
+          this.status = 'success';
           this.show = false;
-          document.location.href="./user";
+          console.log(response);
         })
-        .catch(() => {
-          this.status = 'badLogin';
-          localStorage.removeItem('userToken') 
+        .catch(error => {
+          this.status = 'error';
+//          localStorage.removeItem('userToken');
+          console.log(error);
         });
     },
     onReset(event) {
       event.preventDefault()
       // Reset our form values
       this.form.email = ''
-      this.form.password = ''
+      this.form.password= ''
       // Trick to reset/clear native browser form validation state
       this.show = false
       this.status = ''

@@ -6,9 +6,10 @@ const fs = require('fs');
 exports.create = (req, res, next) => {
 	const Gifing = Gif.build({
 		title: req.body.title,
+		url: req.body.url,
+		userId: req.body.userId,
 		//		url: `${req.protocol}://${req.get('host')}/images/${req.file.filname}`
 		//		url: req.body.url,
-		author: 'a renseigner',
 		//author: userId,
 		createdAt : Date.now(),
 		updatedAt : Date.now()

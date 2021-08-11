@@ -5,9 +5,21 @@ const db = require('../models');
 const User = db.users;
 const Op = db.Sequelize.Op;
 
+exports.getMe = (req, res, next) => {
+	//recherche si l'email est déjà présente dans la DB
+  const token = req.headers.authorization;
+  const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+	User.findOne({where: { id: decodedToken.userId}})
+		.then(user =>{
+			if(user !== null) {
+			}
+				res.status(201).json({ user });
+		})
+		.catch(error => res.status(500).json({ error }));
+};
+
 exports.signup = (req, res, next) => {
 	//recherche si l'email est déjà présente dans la DB
-	console.log(req.body.user);
 	User.findOne({where: { email: req.body.email }})
 		.then(user =>{
 			if(user !== null) {
@@ -25,7 +37,7 @@ exports.signup = (req, res, next) => {
 						});
 					});
 				});
-				res.status(400).json({ message: 'success, welcome at the new members!' });
+				res.status(201).json({ message: 'success, welcome at the new members!' });
 		})
 		.catch(error => res.status(500).json({ error }));
 };
@@ -46,10 +58,12 @@ exports.login = (req, res, next) => {
 					if(!valid) {
 						return res.status(401).json({ error: 'Mot de passe incorrect!' });
 					}
+					console.log(user + 'id: ' + user.id)
 					res.status(200).json({
-						userId: user._id,
+						user: user,
+						userId: user.id,
 						token: jwt.sign(
-							{ userId: user._id },
+							{ userId: user.id },
 							'RANDOM_TOKEN_SECRET',
 							{ expiresIn: '24h' }
 						)

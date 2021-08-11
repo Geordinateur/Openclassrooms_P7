@@ -9,8 +9,13 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false,
       unique: true
     },
-    author: {
-      type: Sequelize.STRING
+    userId: {
+      allowNull: false,
+      type: Sequelize.INTEGER,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     createdAt: {
       type: Sequelize.DATE

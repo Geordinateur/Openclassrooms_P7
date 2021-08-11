@@ -13,11 +13,17 @@
 
 <script>
 import NavBar from './components/NavBar.vue'
+import {mapState} from 'vuex'
+import axios from 'axios'
 
+axios.defaults.headers.common['Authorization'] = 'salut'; 
 export default {
   name: 'App',
   components: {
     NavBar
+  },
+  computed: {
+    ...mapState(['day'])
   }
 }
 </script>
