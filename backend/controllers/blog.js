@@ -6,11 +6,13 @@ const Op = db.Sequelize.Op;
 const fs = require('fs');
 
 exports.create = (req, res, next) => {
+
+	function htmlEntities(str) {
+		return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+	}
 	const Bloging = Blog.build({
 		title: req.body.title,
-		content: req.body.content,
-		//		url: `${req.protocol}://${req.get('host')}/images/${req.file.filname}`
-		//		url: req.body.url,
+		content: htmlEntities(req.body.content),
 		userId: req.body.userId,
 		createdAt : Date.now(),
 		updatedAt : Date.now()
@@ -24,8 +26,6 @@ exports.update = (req, res, next) => {
 	Blog.findByPk(req.params.id)
 		.then(blog => {
 			blog.title = req.body.title;
-			//			blog.url = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-			//			blog.url = req.body.url;
 			blog.userId = req.body.userId;
 			blog.updatedAt = Date.now();
 			blog.save()
@@ -36,7 +36,6 @@ exports.update = (req, res, next) => {
 };
 
 exports.delete = (req, res, next) => {
-	console.log(req.params.id);
 	Blog.findByPk(req.params.id)
 		.then(blog => {
 			if(blog !== null) {
@@ -56,12 +55,8 @@ exports.delete = (req, res, next) => {
 exports.getOne = (req, res, next) => {
 	Blog.findByPk(req.params.id)
 		.then(blog => {
-			Comment.findAll({where: {link: blog.id}})
-				.then(comment => { 
-					console.log(blog);
-					console.log(comment);
-					res.status(200).json()})
-				.catch(error => res.status(400).json({ error }));
+			const username = Blog.belongsTo(User);
+			res.status(200).json({ blog })
 		})
 		.catch(error => res.status(400).json({ error }));
 };

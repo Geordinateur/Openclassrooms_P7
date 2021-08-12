@@ -15,7 +15,7 @@
         >
         <b-form-input
           id="input-1"
-          v-model="form.user"
+          v-model="form.username"
           type="text"
           placeholder="Enter username"
           required
@@ -67,7 +67,7 @@ export default {
       status: '', 
       myToken: '',
       form: {
-        user: '',
+        username: '',
         email: '',
         password: '',
         saved: []
@@ -78,9 +78,10 @@ export default {
   methods: {
     onSubmit(event) {
       event.preventDefault()
+      console.log(this.form.username + this.form.email + this.form.password)
       axios
         .post('http://localhost:3000/api/user/signup', {
-          user: this.form.user,
+          username: this.form.username,
           email: this.form.email,
           password: this.form.password
         })
@@ -95,7 +96,7 @@ export default {
         .catch(error => {
           this.status = 'error';
 //          localStorage.removeItem('userToken');
-          console.log(error);
+          console.log('ERREUR: ' + error);
         });
     },
     onReset(event) {

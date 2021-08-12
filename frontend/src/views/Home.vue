@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div v-for="article in blog" v-bind:key="article">
+    <div v-for="(article, index) in myArraySort" v-bind:key="index">
       <b-card
         :title="article.title"
         tag="article"
@@ -8,10 +8,10 @@
         class="mb-2"
         >
         <b-card-text>
+          Le <strong>{{ article.createdAt | formatDate}}</strong> par <strong>{{ article.author }}</strong><br>
           {{ article.content }}
         </b-card-text>
-
-        <b-button href="#" variant="primary">Go somewhere</b-button>
+        <b-button href="#" variant="primary" @click="decouverte(article.userId)">Go somewhere</b-button>
       </b-card>
     </div>
   </div>
@@ -20,28 +20,41 @@
 <script>
 // @ is an alias to /src
   import axios from 'axios'
+  import _ from 'lodash'
 
 export default {
-  name: 'Home',
+  name: 'home',
   data() {
     return {
-      blog: ''
+      blog: [],
+      gif: [],
+      myArray: [],
     }
   },
-  methods: {
-  },
   created() {
-    axios.defaults.headers.common['Authorization'] = localStorage.userToken
+    console.log('beforeCreated: ' + this.myArray)
     axios
       .get('http://localhost:3000/api/blog')
       .then(response => {
-        const toParse = JSON.stringify(response.data)
-        this.blog = JSON.parse(toParse)
+        this.blog  = response.data
+        this.myArray = this.blog
       })
-      .catch(error => {
-        this.status = 'error'
-        console.log(error)
-      });
+    axios
+      .get('http://localhost:3000/api/gif')
+      .then(response => {
+        this.gif = response.data
+        this.myArray = this.myArray.concat(this.gif)
+      })
+  },
+  beforeMount() {
+
+  },
+  methods: {
+  },
+  computed: {
+    myArraySort: function() {
+      return _.orderBy(this.myArray, 'createdAt', 'desc')
+    },
   },
 }
 </script>

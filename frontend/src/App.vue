@@ -17,6 +17,8 @@
 import NavBar from './components/NavBar.vue'
 import {mapState} from 'vuex'
 import axios from 'axios'
+import Vue from 'vue'
+import moment from 'moment'
 
 axios.defaults.headers.common['Authorization'] = 'salut'; 
 export default {
@@ -28,6 +30,13 @@ export default {
     ...mapState(['day'])
   }
 }
+
+Vue.filter('formatDate', function(value) {
+  if(value) {
+    return moment(String(value)).format('MM/DD/YYYY hh:mm')
+  }
+});
+
 </script>
 
 <style>

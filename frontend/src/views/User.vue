@@ -3,7 +3,7 @@
     <Login />
   </div>
   <div v-else-if="myToken">
-    <h1>Bienvenue {{ this.user.user }} dans votre espace membre</h1>
+    <h1>Bienvenue {{ this.user.username }} dans votre espace membre</h1>
     <ul>
       <li><a href="./user/blog">Ajouter un article</a></li>
       <li><a href="./user/gif">Ajouter une image Gif</a></li>

@@ -16,7 +16,18 @@ exports.getMe = (req, res, next) => {
 				res.status(201).json({ user });
 		})
 		.catch(error => res.status(500).json({ error }));
+}
+exports.getOne = (req, res, next) => {
+	console.log(User.hasOne(req.params.id))
+	User.findOne({where: { id: req.params.id}})
+		.then(user =>{
+			if(user !== null) {
+			}
+				res.status(201).json({ user });
+		})
+		.catch(error => res.status(500).json({ error }));
 };
+;
 
 exports.signup = (req, res, next) => {
 	//recherche si l'email est déjà présente dans la DB
@@ -29,9 +40,10 @@ exports.signup = (req, res, next) => {
 				bcrypt.genSalt(saltRounds, function(err, salt) {
 					bcrypt.hash(req.body.password, salt, function(err, hash) {
 						const saving = User.create({
-							user: req.body.user,
+							username: req.body.username,
 							email: req.body.email,
 							password: hash,
+							isAdmin: 0,
 							createdAt: Date.now(),
 							updatedAt: Date.now()
 						});
@@ -39,7 +51,7 @@ exports.signup = (req, res, next) => {
 				});
 				res.status(201).json({ message: 'success, welcome at the new members!' });
 		})
-		.catch(error => res.status(500).json({ error }));
+		.catch(error => res.status(500).json({ message: error }));
 };
 
 exports.login = (req, res, next) => {

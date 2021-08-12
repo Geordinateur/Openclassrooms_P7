@@ -11,11 +11,6 @@ const routes = [
     component: Home
   },
   {
-    path: '/test',
-    name: 'Test',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Test.vue')
-  },
-  {
     path: '/blog',
     name: 'Blog',
     component: () => import('../views/Blog.vue')
@@ -40,12 +35,6 @@ const routes = [
     name: 'Add gif',
     component: () => import('../views/AddGif.vue')
   }
-
-
-
-
-
-
 ]
 
 const router = new VueRouter({
