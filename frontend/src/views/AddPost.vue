@@ -52,6 +52,7 @@ export default {
       form: {
         title: '',
         content: '',
+        userId: localStorage.userId
       },
       show: true
     }
@@ -59,15 +60,10 @@ export default {
   methods: {
     onSubmit(event) {
       event.preventDefault()
-      axios.defaults.headers.common['Authorization'] = localStorage.userToken
+      axios.defaults.headers.common['Authorization'] = localStorage.userToken + ' ' + localStorage.userId
       axios
         .post('http://localhost:3000/api/blog', {
-//          header: {
- //           Authorization: localStorage.userToken
-//          },
-          title: this.form.title,
-          content: this.form.content,
-          userId: localStorage.userId
+          ...this.form
         })
         .then(response => {
           //          axios.defaults.headers.common['Authorization'] = response.data.token;

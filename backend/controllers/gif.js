@@ -9,9 +9,6 @@ exports.create = (req, res, next) => {
 		title: req.body.title,
 		url: req.body.url,
 		userId: req.body.userId,
-		//		url: `${req.protocol}://${req.get('host')}/images/${req.file.filname}`
-		//		url: req.body.url,
-		//author: userId,
 		createdAt : Date.now(),
 		updatedAt : Date.now()
 	});
@@ -24,10 +21,6 @@ exports.update = (req, res, next) => {
 	Gif.findByPk(req.params.id)
 		.then(gif => {
 			gif.title = req.body.title;
-			//			gif.url = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-			//			gif.url = req.body.url;
-		gif.author = 'a renseigner';
-		//gif.author = userId;
 			gif.updatedAt = Date.now();
 			gif.save()
 				.then(() => res.status(201).json({ message: 'Objet modifié!' }))

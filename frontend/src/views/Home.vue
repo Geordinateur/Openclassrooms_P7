@@ -15,8 +15,13 @@
         <b-card-text v-else>
           <img :src="article.url" :alt="article.title">
         </b-card-text>
+        <span v-if="article.content">
+        <Delete message="Supprimer mon contenu" :id="parseInt(article.id)" :userId="parseInt(article.userId)" content="blog"/>
+        </span><span v-else>
+        <Delete message="Supprimer mon contenu" :id="parseInt(article.id)" :userId="parseInt(article.userId)" content="gif"/>
+        </span>
+     
 
-        <b-button v-if="parseInt(localStorage.userId) === parseInt(article.userId)" class="btn-delete" variant="danger" @click="deleteArticle()">Supprimer mon contenu</b-button>
         <b-button href="#" variant="primary" @click="decouverte(article.userId)">Go somewhere</b-button>
 
       </b-card>
@@ -29,11 +34,13 @@
   import axios from 'axios'
   import _ from 'lodash'
   import Alert from '../components/Alert'
+  import Delete from '../components/Delete'
 
 export default {
   name: 'home',
   components: { 
-    Alert
+    Alert,
+    Delete
   },
   data() {
     return {

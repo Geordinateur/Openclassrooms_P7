@@ -39,12 +39,9 @@ exports.delete = (req, res, next) => {
 	Blog.findByPk(req.params.id)
 		.then(blog => {
 			if(blog !== null) {
-				fs.unlink(`images/${filename}`, () => {
-					const filename = blog.url.split('/images/')[1];
 					Blog.destroy({where: { id: req.params.id}})
 						.then(() => res.status(201).json({ message: 'Objet supprimé!' }))
 						.catch(error => res.status(500).json({ error }));
-				});
 			}else{
 				res.status(404).json({ error: 'Objet non trouvé.' });
 			}

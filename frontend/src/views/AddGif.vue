@@ -21,23 +21,22 @@
           required
           ></b-form-input>
       </b-form-group>
-      <b-form-group
-        id="input-group-2"
-        label="Url de l'image:"
-        label-for="input-2"
-        description=""
-        >
-        <b-form-input
-          id="input-2"
-          v-model="form.url"
-          type="text"
-          placeholder="Url"
-          required
-          ></b-form-input>
-      </b-form-group>
+        <b-form-group
+          id="input-group-2"
+          label="Url de l'image:"
+          label-for="input-2"
+          description=""
+          >
+          <b-form-input
+            id="input-2"
+            v-model="form.url"
+            type="text"
+            placeholder="Url"
+            required
+            ></b-form-input>
+        </b-form-group>
           <b-button type="submit" variant="primary" class="btn-add-content">Partager</b-button>
           <b-button type="reset" variant="danger" class="btn-add-content">Reset</b-button>
-          <p>{{$store.state.userId}}</p>
     </b-form>
   </div>
 </template>
@@ -52,6 +51,7 @@ export default {
       form: {
         title: '',
         url: '',
+        userId: localStorage.userId,
       },
       show: true
     }
@@ -59,13 +59,11 @@ export default {
   methods: {
     onSubmit(event) {
       event.preventDefault()
-      axios.defaults.headers.common['Authorization'] = localStorage.userToken
+      axios.defaults.headers.common['Authorization'] = localStorage.userToken + ' ' + localStorage.userId
       axios
         .post('http://localhost:3000/api/gif', {
-          title: this.form.title,
-          url: this.form.url,
-          userId: localStorage.userId
-        })
+          ...this.form
+      })
         .then(response => {
           //          axios.defaults.headers.common['Authorization'] = response.data.token;
           //          localStorage.setItem('userToken', response.data.token);

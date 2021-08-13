@@ -52,7 +52,7 @@ export default {
     },
     deleteAccount() {
       event.preventDefault()
-      axios.defaults.headers.common['Authorization'] = localStorage.userToken
+      axios.defaults.headers.common['Authorization'] = localStorage.userToken + ' ' + localStorage.userId
       axios
         .delete('http://localhost:3000/api/user/' + localStorage.userId)
         .then(() => {

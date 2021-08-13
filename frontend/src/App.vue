@@ -29,9 +29,6 @@ export default {
   }
 }
 
-console.log('userToken' + localStorage.userToken)
-console.log('userId' + localStorage.userId)
-
 Vue.filter('formatDate', function(value) {
   if(value) {
     return "Le " + moment(String(value)).format('MM/DD/YYYY') + " à " + moment(String(value)).format('hh:mm')
