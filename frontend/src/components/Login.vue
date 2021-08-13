@@ -1,12 +1,7 @@
 <template>
   <div v-if="!myToken" id="login">
-    <b-card v-if="status === 'badLogin'" bg-variant="danger" text-variant="white" class="text-center m-1">
-      <b-card-text>Votre mot de passe ou identifiants sont incorrects.</b-card-text>
-    </b-card>
-    <b-card v-else-if="status === 'successLogin'" bg-variant="success" text-variant="white" class="text-center m-1">
-      <b-card-text>Votre identification à été réaliser avec succès, vous allez être rediriger...</b-card-text>
-    </b-card>
-    <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+    <Alert :status="statusAlert" :message="messageAlert" :show="showAlert" />
+    <b-form @submit="onSubmit" @reset="onReset" v-if="showForm">
       <b-form-group
         id="input-group-1"
         label="Email address:"
@@ -54,18 +49,24 @@
 </template>
 <script>
 import axios from 'axios';
+import Alert from '../components/Alert'
 
 export default {
+  components: {
+    Alert
+  },
   data(){
     return {
-      status: '', 
+      messageAlert: '',
+      statusAlert: '',
+      showAlert: false, 
+      showForm: true,
       myToken: '',
       form: {
         email: '',
         password: '',
         saved: []
       },
-      show: true
     }
   },
   methods: {
@@ -80,13 +81,17 @@ export default {
           axios.defaults.headers.common['Authorization'] = response.data.token
           localStorage.setItem('userToken', response.data.token)
           localStorage.setItem('userId', response.data.userId)
-          this.status = 'successLogin' 
-          this.show = false
-          setTimeout(function(){ document.location.href="./user" }, 5000);
+          this.showAlert = true
+          this.statusAlert = 'success'
+          this.messageAlert = "Votre identification à été réaliser avec succès, vous allez être rediriger..."
+          this.showForm = false
+          setTimeout(function(){ document.location.href="../user" }, 5000);
         })
         .catch(() => {
-          this.status = 'badLogin';
-          this.show = true
+          this.statusAlert = 'danger'
+          this.messageAlert = "Votre mot de passe ou identifiants sont incorrects."
+          this.showAlert = true
+          this.showForm = true
           localStorage.removeItem('userToken') 
         });
     },
@@ -96,10 +101,11 @@ export default {
       this.form.email = ''
       this.form.password = ''
       // Trick to reset/clear native browser form validation state
-      this.show = false
+      this.showAlert = false
+      this.showForm = false
       this.status = ''
       this.$nextTick(() => {
-        this.show = true
+        this.showForm = true
       });
     }
   }

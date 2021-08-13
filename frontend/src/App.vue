@@ -15,7 +15,6 @@
 
 <script>
 import NavBar from './components/NavBar.vue'
-import {mapState} from 'vuex'
 import axios from 'axios'
 import Vue from 'vue'
 import moment from 'moment'
@@ -27,13 +26,15 @@ export default {
     NavBar
   },
   computed: {
-    ...mapState(['day'])
   }
 }
 
+console.log('userToken' + localStorage.userToken)
+console.log('userId' + localStorage.userId)
+
 Vue.filter('formatDate', function(value) {
   if(value) {
-    return moment(String(value)).format('MM/DD/YYYY hh:mm')
+    return "Le " + moment(String(value)).format('MM/DD/YYYY') + " à " + moment(String(value)).format('hh:mm')
   }
 });
 
@@ -42,5 +43,24 @@ Vue.filter('formatDate', function(value) {
 <style>
 a {
   text-decoration: none;
+}
+.btn {
+  margin-right: 6px;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s, transform .5s;
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0;
+}
+.btn-delete {
+  position: absolue;
+  right: 0;
+}
+.div-button-navuser {
+  padding-bottom: 10px;
+}
+.btn-add-content{
+  margin-top: 10px;
 }
 </style>

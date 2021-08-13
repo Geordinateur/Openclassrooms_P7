@@ -62,7 +62,8 @@ exports.getOne = (req, res, next) => {
 };
 
 exports.getAll = (req, res, next) => {
-	Blog.findAll()
+	Blog.belongsTo(User, { foreignKey: 'userId' });
+	Blog.findAll({include: User})
 		.then(blogs => {
 			if(blogs.length === 0) {
 				res.status(404).json({ error: 'Aucun contenu pour le moment.' });

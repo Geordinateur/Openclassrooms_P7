@@ -1,5 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
   const Gif = sequelize.define("gifs", {
+    id: {
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true
+    },
     title: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -12,6 +18,7 @@ module.exports = (sequelize, Sequelize) => {
     userId: {
       allowNull: false,
       type: Sequelize.INTEGER,
+      onDelete: 'CASCADE',
       references: {
         model: 'users',
         key: 'id'

@@ -41,3 +41,9 @@ export default {
   }
 }
 </script>
+<style>
+.btn {
+  background: black;
+  margin: 100px;
+}
+</style>

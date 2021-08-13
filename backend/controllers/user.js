@@ -29,6 +29,18 @@ exports.getOne = (req, res, next) => {
 };
 ;
 
+exports.delete = (req, res, next) => {
+	User.findByPk(req.params.id)
+		.then(user => {
+			if(user !== null) {
+					user.destroy()
+						.then(() => res.status(201).json({ message: 'Utilisateur supprimé!' }))
+						.catch(error => res.status(500).json({ error }));
+			}
+		})
+		.catch(error => res.status(401).json({ error }));
+};
+
 exports.signup = (req, res, next) => {
 	//recherche si l'email est déjà présente dans la DB
 	User.findOne({where: { email: req.body.email }})

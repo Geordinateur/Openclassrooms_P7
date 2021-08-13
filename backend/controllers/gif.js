@@ -1,5 +1,6 @@
 const db = require('../models');
 const Gif = db.gifs;
+const User = db.users;
 const Op = db.Sequelize.Op;
 const fs = require('fs');
 
@@ -60,7 +61,13 @@ exports.getOne = (req, res, next) => {
 };
 
 exports.getAll = (req, res, next) => {
-	Gif.findAll()
-		.then(gifs => res.status(200).json(gifs))
+	Gif.belongsTo(User, { foreignKey: 'userId' });
+	Gif.findAll({include: User})
+		.then(gifs => {
+			if(gifs.length === 0) {
+				res.status(404).json({ error: 'Aucun contenu pour le moment.' });
+			}
+			res.status(200).json(gifs)
+		})
 		.catch(error => res.status(400).json({ error }));
 };

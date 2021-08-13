@@ -13,12 +13,10 @@ module.exports = (sequelize, Sequelize) => {
     content: {
       type: Sequelize.TEXT,
     },
-    url: {
-      type: Sequelize.STRING,
-    },
     userId: {
       allowNull: false,
       type: Sequelize.INTEGER,
+      onDelete: 'CASCADE',
       references: {
         model: 'users',
         key: 'id'
