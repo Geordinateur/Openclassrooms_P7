@@ -53,7 +53,7 @@ export default {
       myArray: [],
     }
   },
-  created() {
+  mounted() {
     axios
       .get('http://localhost:3000/api/blog')
       .then(response => {
@@ -79,8 +79,6 @@ export default {
         this.statusAlert = 'secondary'
         }
       })
-  },
-  mounted() {
   },
   methods: {
   },

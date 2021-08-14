@@ -1,12 +1,7 @@
 <template>
   <div id="login">
-    <b-card v-if="status === 'error'" bg-variant="danger" text-variant="white" class="text-center m-1">
-      <b-card-text>Erreur.</b-card-text>
-    </b-card>
-    <b-card v-else-if="status === 'success'" bg-variant="success" text-variant="white" class="text-center m-1">
-      <b-card-text>Votre Gif à été ajouter avec succes.</b-card-text>
-    </b-card>
-    <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+    <Alert :message="messageAlert" :status="statusAlert" :show="showAlert" />
+    <b-form @submit="onSubmit" @reset="onReset" v-if="showForm">
       <b-form-group
         id="input-group-1"
         label="Titre de l'article:"
@@ -42,18 +37,24 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
+import Alert from '../components/Alert'
 
 export default {
+  components: {
+    Alert
+  },
   data(){
     return {
-      status: '', 
+      messageAlert: '',
+      statusAlert: '',
+      showAlert: false, 
+      showForm: true,
       form: {
         title: '',
         url: '',
         userId: localStorage.userId,
       },
-      show: true
     }
   },
   methods: {
@@ -64,30 +65,31 @@ export default {
         .post('http://localhost:3000/api/gif', {
           ...this.form
       })
-        .then(response => {
+        .then(() => {
           //          axios.defaults.headers.common['Authorization'] = response.data.token;
           //          localStorage.setItem('userToken', response.data.token);
-          this.status = 'success';
-          this.show = false;
-          console.log(response);
+          this.showForm = false;
+          this.messageAlert = "Votre Gif à été ajouter avec succes."
+          this.statusAlert = 'success'
+          this.showAlert = true
           setTimeout(function(){ document.location.href="../user" }, 3000);
         })
         .catch(error => {
-          this.status = 'error';
-          //          localStorage.removeItem('userToken');
-          console.log(error);
+          this.messageAlert = error
+          this.statusAlert = 'danger'
+          this.showAlert = true
         });
     },
     onReset(event) {
       event.preventDefault()
       // Reset our form values
-      this.form.email = ''
-      this.form.password= ''
+      this.form.title = ''
+      this.form.url = ''
       // Trick to reset/clear native browser form validation state
-      this.show = false
-      this.status = ''
+      this.showForm = false
+      this.showAlert = false
       this.$nextTick(() => {
-        this.show = true
+        this.showForm = true
       });
     },
   },

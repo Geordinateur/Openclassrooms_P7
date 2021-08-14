@@ -4,7 +4,7 @@
       <NavBar />
     </div>
     <div class="container mt-4 mb-4">
-    <router-view/>
+      <router-view/>
     </div>
   </div>
 </template>
@@ -23,9 +23,14 @@ axios.defaults.headers.common['Authorization'] = 'salut';
 export default {
   name: 'App',
   components: {
-    NavBar
+    NavBar,
   },
   computed: {
+  },
+  data() {
+    return {
+      showLoader: false
+    }
   }
 }
 
@@ -50,7 +55,7 @@ a {
 .fade-enter, .fade-leave-active {
   opacity: 0;
 }
-.btn-delete {
+s.btn-delete {
   position: absolue;
   right: 0;
 }
