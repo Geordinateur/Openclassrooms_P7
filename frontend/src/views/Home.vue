@@ -11,17 +11,21 @@
         >
         <b-card-text v-if="article.content">
           {{ article.content }}
+          <div v-if="article.createdAt !== article.updatedAt">
+            Modifié le {{ article.updatedAt | formatDate }} par {{ article.user.username }}
+          </div>
         </b-card-text>
         <b-card-text v-else>
           <img :src="article.url" :alt="article.title">
+          <p>Modifié le {{ article.updatedAt | formatDate }} par {{ article.user.username }}</p>
         </b-card-text>
-        <span v-if="article.content">
-        <Delete message="Supprimer mon contenu" :id="parseInt(article.id)" :userId="parseInt(article.userId)" content="blog"/>
-        </span><span v-else>
-        <Delete message="Supprimer mon contenu" :id="parseInt(article.id)" :userId="parseInt(article.userId)" content="gif"/>
+        <span v-if="article.content" v-show="parseInt(localStorage.userId) === parseInt(article.userId)"> 
+          <Delete message="Supprimer" :id="parseInt(article.id)" :userId="parseInt(article.userId)" content="blog"/>
+          <b-button :href="`blog/` + article.id" variant="secondary">Modifier</b-button>
+        </span><span v-else v-show="parseInt(localStorage.userId) === parseInt(article.userId)">
+          <Delete message="Supprimer" :id="parseInt(article.id)" :userId="parseInt(article.userId)" content="gif"/>
+          <b-button :href="`gif/` + article.id" variant="secondary">Modifier</b-button>
         </span>
-     
-
         <b-button href="#" variant="primary" @click="decouverte(article.userId)">Go somewhere</b-button>
 
       </b-card>
@@ -32,15 +36,15 @@
 <script>
 // @ is an alias to /src
   import axios from 'axios'
-  import _ from 'lodash'
-  import Alert from '../components/Alert'
-  import Delete from '../components/Delete'
+import _ from 'lodash'
+import Alert from '../components/Alert'
+import Delete from '../components/Delete'
 
 export default {
   name: 'home',
   components: { 
     Alert,
-    Delete
+    Delete,
   },
   data() {
     return {
@@ -55,32 +59,34 @@ export default {
   },
   mounted() {
     axios
-      .get('http://localhost:3000/api/blog')
+      .get('blog')
       .then(response => {
         this.blog  = response.data
         this.myArray = this.blog
         this.showAlert = false
       })
       .catch(()=> {
-        this.showAlert = true
-        this.messageAlert = "Aucun contenu pour le moment."
-        this.statusAlert = 'secondary'
+        this.msgAlert(true, "Aucun contenu pour le moment.", "secondary")
       })
     axios
-      .get('http://localhost:3000/api/gif')
+      .get('gif')
       .then(response => {
+        this.msgAlert(false)
         this.gif = response.data
         this.myArray = this.myArray.concat(this.gif)
-        this.showAlert = false
       })
       .catch(() => {
         if(this.showAlert === true) {
-        this.messageAlert = "Aucun contenu pour le moment."
-        this.statusAlert = 'secondary'
+          this.msgAlert(true, "Aucun contenu pour le moment.", "secondary")
         }
       })
   },
   methods: {
+    msgAlert(show, message, status) {
+      this.showAlert = show 
+      this.messageAlert = message 
+      this.statusAlert = status
+    },
   },
   computed: {
     myArraySort: function() {

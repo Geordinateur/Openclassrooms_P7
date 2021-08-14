@@ -11,9 +11,14 @@ const routes = [
     component: Home
   },
   {
-    path: '/blog',
+    path: '/blog/:id',
     name: 'Blog',
     component: () => import('../views/Blog.vue')
+  },
+  {
+    path: '/gif/:id',
+    name: 'Gif',
+    component: () => import('../views/Gif.vue')
   },
   {
     path: '/user',

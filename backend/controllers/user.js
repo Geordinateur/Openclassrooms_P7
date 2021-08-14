@@ -7,23 +7,22 @@ const Op = db.Sequelize.Op;
 
 exports.getMe = (req, res, next) => {
 	//recherche si l'email est déjà présente dans la DB
-  const token = req.headers.authorization;
-  const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
+	const token = req.headers.authorization;
+	const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
 	User.findOne({where: { id: decodedToken.userId}})
 		.then(user =>{
 			if(user !== null) {
 			}
-				res.status(201).json({ user });
+			res.status(201).json({ user });
 		})
 		.catch(error => res.status(500).json({ error }));
 }
 exports.getOne = (req, res, next) => {
-	console.log(User.hasOne(req.params.id))
-	User.findOne({where: { id: req.params.id}})
+	User.findByPk(req.params.id)
 		.then(user =>{
 			if(user !== null) {
 			}
-				res.status(201).json({ user });
+			res.status(201).json({ user });
 		})
 		.catch(error => res.status(500).json({ error }));
 };
@@ -33,9 +32,9 @@ exports.delete = (req, res, next) => {
 	User.findByPk(req.params.id)
 		.then(user => {
 			if(user !== null) {
-					user.destroy()
-						.then(() => res.status(201).json({ message: 'Utilisateur supprimé!' }))
-						.catch(error => res.status(500).json({ error }));
+				user.destroy()
+					.then(() => res.status(201).json({ message: 'Utilisateur supprimé!' }))
+					.catch(error => res.status(500).json({ error }));
 			}
 		})
 		.catch(error => res.status(401).json({ error }));
@@ -48,26 +47,26 @@ exports.signup = (req, res, next) => {
 			if(user !== null) {
 				res.status(500).json({ message: 'error, email already use!' });
 			}
-				//cryptage du mot de passe, une réponse promise
-				bcrypt.genSalt(saltRounds, function(err, salt) {
-					bcrypt.hash(req.body.password, salt, function(err, hash) {
-						const saving = User.create({
-							username: req.body.username,
-							email: req.body.email,
-							password: hash,
-							isAdmin: 0,
-							createdAt: Date.now(),
-							updatedAt: Date.now()
-						});
+			//cryptage du mot de passe, une réponse promise
+			bcrypt.genSalt(saltRounds, function(err, salt) {
+				bcrypt.hash(req.body.password, salt, function(err, hash) {
+					const saving = User.create({
+						username: req.body.username,
+						email: req.body.email,
+						password: hash,
+						isAdmin: 0,
+						createdAt: Date.now(),
+						updatedAt: Date.now()
 					});
 				});
-				res.status(201).json({ message: 'success, welcome at the new members!' });
+			});
+			res.status(201).json({ message: 'success, welcome at the new members!' });
 		})
 		.catch(error => res.status(500).json({ message: error }));
 };
 
 exports.login = (req, res, next) => {
-//	console.log('login');
+	//	console.log('login');
 	User.findOne({
 		where: {email: req.body.email}
 	})
@@ -75,8 +74,8 @@ exports.login = (req, res, next) => {
 			if(!user) {
 				return res.status(401).json({ error: 'Utilisateur non trouvé' });
 			}
-//			console.log(req.body.password);
-//			console.log(user.password);
+			//			console.log(req.body.password);
+			//			console.log(user.password);
 			bcrypt.compare(req.body.password, user.password)
 				.then(valid  => {
 					if(!valid) {
@@ -97,3 +96,29 @@ exports.login = (req, res, next) => {
 		})
 		.catch(error => res.status(500).json({ error }));
 }
+exports.update = (req, res, next) => {
+	User.findByPk(req.params.id)
+		.then(user => {
+			if(req.body.newPassword) { 
+				bcrypt.genSalt(saltRounds, function(err, salt) {
+					bcrypt.hash(req.body.newPassword, salt, function(err, hash) {
+						user.username = req.body.username
+						user.password = hash
+						user.email = req.body.email
+						user.save()
+							.then(() => res.status(201).json({ message: 'Profil modifié!' }))
+							.catch(error => res.status(500).json({ error: error.errors[0]['message'] }));
+					})
+				})
+			}else{
+				user.username = req.body.username
+				user.email = req.body.email
+				user.save()
+					.then(() => res.status(201).json({ message: 'Profil modifié!' }))
+					.catch(error => res.status(500).json({ error: error.errors[0]['message'] }));
+			}
+		})
+		.catch(error => res.status(500).json({ error }));
+};
+
+

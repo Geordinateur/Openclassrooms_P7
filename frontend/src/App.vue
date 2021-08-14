@@ -19,7 +19,10 @@ import axios from 'axios'
 import Vue from 'vue'
 import moment from 'moment'
 
-axios.defaults.headers.common['Authorization'] = 'salut'; 
+axios.defaults.baseURL = 'http://localhost:3000/api/';
+axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.userToken + ' ' + localStorage.userId; 
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+
 export default {
   name: 'App',
   components: {

@@ -5,11 +5,11 @@ const User = db.users;
 const Op = db.Sequelize.Op;
 const fs = require('fs');
 
-exports.create = (req, res, next) => {
+function htmlEntities(str) {
+	return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
 
-	function htmlEntities(str) {
-		return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-	}
+exports.create = (req, res, next) => {
 	const Bloging = Blog.build({
 		title: req.body.title,
 		content: htmlEntities(req.body.content),
@@ -26,6 +26,7 @@ exports.update = (req, res, next) => {
 	Blog.findByPk(req.params.id)
 		.then(blog => {
 			blog.title = req.body.title;
+			blog.content = htmlEntities(req.body.content);
 			blog.userId = req.body.userId;
 			blog.updatedAt = Date.now();
 			blog.save()
@@ -39,9 +40,9 @@ exports.delete = (req, res, next) => {
 	Blog.findByPk(req.params.id)
 		.then(blog => {
 			if(blog !== null) {
-					Blog.destroy({where: { id: req.params.id}})
-						.then(() => res.status(201).json({ message: 'Objet supprimé!' }))
-						.catch(error => res.status(500).json({ error }));
+				Blog.destroy({where: { id: req.params.id}})
+					.then(() => res.status(201).json({ message: 'Objet supprimé!' }))
+					.catch(error => res.status(500).json({ error }));
 			}else{
 				res.status(404).json({ error: 'Objet non trouvé.' });
 			}
@@ -50,9 +51,9 @@ exports.delete = (req, res, next) => {
 };
 
 exports.getOne = (req, res, next) => {
-	Blog.findByPk(req.params.id)
+	Blog.belongsTo(User, { foreignKey: 'userId' });
+	Blog.findByPk(req.params.id, {include: User})
 		.then(blog => {
-			const username = Blog.belongsTo(User);
 			res.status(200).json({ blog })
 		})
 		.catch(error => res.status(400).json({ error }));

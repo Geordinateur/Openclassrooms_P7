@@ -39,33 +39,24 @@ export default {
   methods: {
     destroy(content, id) {
       axios
-        .delete('http://localhost:3000/api/' + content + '/' + id, {
-          headers: {"Authorization": this.myToken + ' ' + this.userId}
-        })
+        .delete(content + '/' + id)
         .then(() => { 
           setTimeout(function(){ document.location.reload() }, 2000)
-          this.messageAlert = "Contenu supprimer!!"
-          this.statusAlert = "warning"
-          this.showAlert = true
+          this.msgAlert(true, "Contenu supprimer!!", "warning")
         })
         .catch(error => {
-          this.messageAlert = error
-          this.statusAlert = "success"
-          this.showAlert = true
+          this.msgAlert(true, error, "danger")
         })
+    },
+    msgAlert(show, message, status) {
+      this.showAlert = show 
+      this.messageAlert = message 
+      this.statusAlert = status
     }
   },
   mounted() {
-    if(localStorage.userToken.length !== 0) {
-      this.myToken = localStorage.userToken;
-    }else{
-      localStorage.clear()
-    }
   },
   watch: {
-    myToken(newToken) {
-      localStorage.userToken = newToken;
-    }
   }
 }
 </script>

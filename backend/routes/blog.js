@@ -9,5 +9,6 @@ router.get('/:id', blogCtrl.getOne);
 router.post('/', auth, blogCtrl.create);
 router.post('/:id', auth, blogCtrl.update);
 router.delete('/:id', auth, blogCtrl.delete);
+router.put('/:id', auth, blogCtrl.update);
 
 module.exports = router;

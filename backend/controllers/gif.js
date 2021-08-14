@@ -15,6 +15,7 @@ exports.create = (req, res, next) => {
 	Gifing.save()
 		.then(() => res.status(201).json({ message: 'Objet enregistré!' }))
 		.catch(error => res.status(400).json({ error: error.errors[0]['message'] }))
+//		.catch(error => res.status(400).json({ error: error.errors[0]['message'] }))
 };
 
 exports.getAll = (req, res, next) => {
@@ -51,10 +52,11 @@ exports.update = (req, res, next) => {
 	Gif.findByPk(req.params.id)
 		.then(gif => {
 			gif.title = req.body.title;
+			gif.url = req.body.url;
 			gif.updatedAt = Date.now();
 			gif.save()
 				.then(() => res.status(201).json({ message: 'Objet modifié!' }))
-				.catch(error => res.status(500).json({ error: error.errors[0]['message'] }));
+				.catch(error => res.status(400).json({ error: error.errors[0]['message'] }));
 		})
 		.catch(error => res.status(500).json({ error }));
 };

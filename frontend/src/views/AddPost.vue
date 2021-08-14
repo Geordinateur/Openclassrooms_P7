@@ -61,9 +61,8 @@ export default {
   methods: {
     onSubmit(event) {
       event.preventDefault()
-      axios.defaults.headers.common['Authorization'] = localStorage.userToken + ' ' + localStorage.userId
       axios
-        .post('http://localhost:3000/api/blog', {
+        .post('blog', {
           ...this.form
         })
         .then(() => {

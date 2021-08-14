@@ -1,5 +1,5 @@
 <template>
-  <div id="login">
+  <div id="add">
     <Alert :message="messageAlert" :status="statusAlert" :show="showAlert" />
     <b-form @submit="onSubmit" @reset="onReset" v-if="showForm">
       <b-form-group
@@ -60,14 +60,11 @@ export default {
   methods: {
     onSubmit(event) {
       event.preventDefault()
-      axios.defaults.headers.common['Authorization'] = localStorage.userToken + ' ' + localStorage.userId
       axios
-        .post('http://localhost:3000/api/gif', {
+        .post('gif', {
           ...this.form
       })
         .then(() => {
-          //          axios.defaults.headers.common['Authorization'] = response.data.token;
-          //          localStorage.setItem('userToken', response.data.token);
           this.showForm = false;
           this.messageAlert = "Votre Gif à été ajouter avec succes."
           this.statusAlert = 'success'
@@ -75,7 +72,7 @@ export default {
           setTimeout(function(){ document.location.href="../user" }, 3000);
         })
         .catch(error => {
-          this.messageAlert = error
+          this.messageAlert = error + ': ' +  error.response.data.error
           this.statusAlert = 'danger'
           this.showAlert = true
         });
