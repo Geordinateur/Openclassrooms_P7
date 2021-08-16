@@ -16,7 +16,7 @@
           </div>
         </b-card-text>
         <b-card-text v-else>
-          <img :src="article.imageUrl" :alt="article.title">
+          <img :src="article.imageUrl" :alt="article.title" class="image-article">
           <p v-if="article.createdAt !== article.updatedAt">
           Modifié le {{ article.updatedAt | formatDate }} par {{ article.user.username }}
           </p>
@@ -137,5 +137,8 @@ export default {
 }
 .dis {
   color: red;
+}
+.image-article {
+  max-width: 700px;
 }
 </style>
