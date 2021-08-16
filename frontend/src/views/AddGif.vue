@@ -19,19 +19,20 @@
         <b-form-group
           id="input-group-2"
           label="Url de l'image:"
-          label-for="input-2"
+          label-for="urlFile"
           description=""
           >
           <b-form-input
-            id="input-2"
-            v-model="form.url"
+            id="urlFile"
+            v-model="form.imageUrl"
             type="text"
             placeholder="Url"
-            required
+            @focus="onFocusAvatar"
             ></b-form-input>
+          <b-form-file @selected="onFocusAvatar" @change="onFileSelected" v-model="selectedFile" class="mt-3" id="selectedFile" plain></b-form-file>
         </b-form-group>
-          <b-button type="submit" variant="primary" class="btn-add-content">Partager</b-button>
-          <b-button type="reset" variant="danger" class="btn-add-content">Reset</b-button>
+        <b-button type="submit" variant="primary" class="btn-add-content">Partager</b-button>
+        <b-button type="reset" variant="danger" class="btn-add-content">Reset</b-button>
     </b-form>
   </div>
 </template>
@@ -50,20 +51,43 @@ export default {
       statusAlert: '',
       showAlert: false, 
       showForm: true,
+      selectedFile: null,
       form: {
         title: '',
-        url: '',
         userId: localStorage.userId,
+        imageUrl: '',
       },
     }
   },
   methods: {
+    onFileSelected(event) {
+      this.selectedFile  = event.target.files[0]
+    },
+    onFocusAvatar(event) {
+      console.log(event)
+      if(event.target.id == "urlFile"){
+        document.getElementById('selectedFile').setAttribute("disabled", "")
+      } else if(event.target.id == "selectedFile") {
+        console.log('choisir focused')
+      }
+    },
     onSubmit(event) {
       event.preventDefault()
+      const fd = new FormData();
+      fd.append('title', this.form.title)
+      fd.append('userId', this.form.userId)
+      console.log(this.selectedFile)
+      if(this.selectedFile !== null){
+        fd.append('image', this.selectedFile, this.selectedFile.name)
+        fd.append('imageUrl', 'http://localhost:3000/images/' + this.selectedFile.name)
+      } else {
+        fd.append('imageUrl', this.form.imageUrl);
+      }
       axios
-        .post('gif', {
-          ...this.form
-      })
+        .post('gif', 
+          fd
+          //          { ...this.form, fd },
+        )
         .then(() => {
           this.showForm = false;
           this.messageAlert = "Votre Gif à été ajouter avec succes."
@@ -90,5 +114,7 @@ export default {
       });
     },
   },
+  watch: {
+  }
 }
 </script>

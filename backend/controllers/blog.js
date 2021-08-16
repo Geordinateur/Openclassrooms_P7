@@ -26,7 +26,7 @@ exports.update = (req, res, next) => {
 	Blog.findByPk(req.params.id)
 		.then(blog => {
 			blog.title = req.body.title;
-			blog.content = htmlEntities(req.body.content);
+			blog.content = htmlEntities(req.body.content),
 			blog.userId = req.body.userId;
 			blog.updatedAt = Date.now();
 			blog.save()

@@ -1,7 +1,7 @@
 <template>
   <div id="add">
     <Alert :message="messageAlert" :status="statusAlert" :show="showAlert" />
-    <b-form @submit="onSubmit" @reset="onReset" v-if="parseInt(localStorage.userId) === parseInt(form.userId)" v-show="showForm">
+    <b-form @submit="onSubmit" @reset="onReset" v-if="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(form.userId)" v-show="showForm">
       <b-form-group
         id="input-group-1"
         label="Titre de l'article:"
@@ -71,7 +71,7 @@ export default {
       event.preventDefault()
       axios
         .put('blog/' + this.id, {
-          ...this.form, updatedAt: Date.now()
+          ...this.form, userId: this.$store.state.user.id, updatedAt: Date.now()
         })
         .then(() => {
           this.msgAlert(true, "Votre post à correctement été modifier", "warning")

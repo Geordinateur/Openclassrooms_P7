@@ -10,7 +10,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    url: {
+    imageUrl: {
       type: Sequelize.STRING,
       allowNull: false,
       unique: true
@@ -30,6 +30,31 @@ module.exports = (sequelize, Sequelize) => {
     updatedAt: {
       type: Sequelize.DATE
     },
+    likes: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    dislikes: {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    userLikes: {
+      type: Sequelize.TEXT,
+      //astuce du web
+      allowNull: false,
+      defaultValue: '0,',
+      get() {
+        return this.getDataValue('userLikes').split(',')
+      },
+      //      set(val) {
+      //        this.setDataValue('userLikes', this.userLikes + val.join(';'));
+      //      },
+    },
+    userDislikes: {
+      type: Sequelize.TEXT
+    }
   })
   return Gif;
 };

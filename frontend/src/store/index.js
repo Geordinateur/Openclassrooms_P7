@@ -1,40 +1,42 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
-  state: {
+
+const state = {
+  auth: false,
+  user: {
   },
+  likes: {
+  },
+}
+
+//const mutations = {
+//  LOGIN: (state, name) => {
+//    state.user.push({
+//      name: name,
+//      completed: false
+//    })
+//  }
+//}
+
+export default new Vuex.Store({
+  state: state,  
   mutations: {
+    AUTHENTIFICATION(state, payload) {
+      state.auth = true
+      state.user.name = payload.username
+      state.user.id = payload.id
+      if(parseInt(payload.isAdmin) === 1) {state.user.isAdmin = true}
+    }
   },
   getters: {
+    userSaw(state) {
+      return `${state.name}`
+    }
   },
   actions: {
-     signup({ commit }, user) {
-      const signUpAPI = "api/user/signup";
-      return new Promise((resolve, reject) => {
-        axios
-          .post(signUpAPI, {
-            username: user.username,
-            email: user.email,
-            password: user.password,
-          })
-          .then((response) => {
-            commit("user", response.data.accessToken);
-            // commit ('user', response.data.user)
-
-            console.log("response", response);
-
-            resolve(response);
-          })
-          .catch((error) => {
-            console.log(error);
-            reject(error);
-          });
-      });
-    },
   },
   modules: {
   },

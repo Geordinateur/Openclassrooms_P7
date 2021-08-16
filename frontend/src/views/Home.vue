@@ -16,14 +16,31 @@
           </div>
         </b-card-text>
         <b-card-text v-else>
-          <img :src="article.url" :alt="article.title">
-          <p>Modifié le {{ article.updatedAt | formatDate }} par {{ article.user.username }}</p>
+          <img :src="article.imageUrl" :alt="article.title">
+          <p v-if="article.createdAt !== article.updatedAt">
+          Modifié le {{ article.updatedAt | formatDate }} par {{ article.user.username }}
+          </p>
+
+
+          <div v-for="(userLikesId, index) in article.userLikes" v-bind:key="index">
+            {{xxx(userLikesId)}} ????
+            {{ articles.canLike }}
+            {{ canILike }}
+            <span v-if="parseInt(userLikesId) === parseInt(localStorage.userId)">Ta dja vote</span>
+          </div>
+          <a href="#" @click="addLike(article.id)" class="likes"><i class="far fa-thumbs-up"></i></a>
+          {{ article.likes }}
+          <a href="#" @click="addDislike(article.id)" class="likes dis"><i class="far fa-thumbs-down"></i></a>
+          {{ article.dislikes }} 
+
+
+
         </b-card-text>
-        <span v-if="article.content" v-show="parseInt(localStorage.userId) === parseInt(article.userId)"> 
-          <Delete message="Supprimer" :id="parseInt(article.id)" :userId="parseInt(article.userId)" content="blog"/>
+        <span v-if="article.content" v-show="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(article.userId)"> 
+          <Delete message="Supprimer" :id="parseInt(article.id)" content="blog"/>
           <b-button :href="`blog/` + article.id" variant="secondary">Modifier</b-button>
-        </span><span v-else v-show="parseInt(localStorage.userId) === parseInt(article.userId)">
-          <Delete message="Supprimer" :id="parseInt(article.id)" :userId="parseInt(article.userId)" content="gif"/>
+        </span><span v-else v-show="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(article.userId)">
+          <Delete message="Supprimer" :id="parseInt(article.id)" content="gif"/>
           <b-button :href="`gif/` + article.id" variant="secondary">Modifier</b-button>
         </span>
         <b-button href="#" variant="primary" @click="decouverte(article.userId)">Go somewhere</b-button>
@@ -55,6 +72,12 @@ export default {
       blog: [],
       gif: [],
       myArray: [],
+      canILike: 'true',
+      articles: [{
+        userLikes: [],
+        canLike: 'true',
+      }
+    ],
     }
   },
   mounted() {
@@ -87,11 +110,32 @@ export default {
       this.messageAlert = message 
       this.statusAlert = status
     },
+    addLike(id) {
+      axios
+      .put('gif/' + id + '/like')
+        .then(() => this.msgAlert(true, "Merci pour votre contribution", "success"))
+        .catch(error => console.log(error))
+    },
+    xxx(id) {
+      if(id === localStorage.userId) { this.canILike = 'false' }
+    },
   },
   computed: {
     myArraySort: function() {
       return _.orderBy(this.myArray, 'createdAt', 'desc')
     },
   },
+  wath: {
+  },
 }
 </script>
+
+<style>
+.likes {
+  font-size: 1.3rem;
+  color: green;
+}
+.dis {
+  color: red;
+}
+</style>

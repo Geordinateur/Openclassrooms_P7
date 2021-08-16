@@ -3,10 +3,14 @@ const jwt = require('jsonwebtoken');
 module.exports = (req, res, next) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
-    const userId = req.headers.authorization.split(' ')[2];
+    let userId = 0
+    if(req.params.userId !== null){ 
+      userId = req.headers.authorization.split(' ')[2] 
+    } else { 
+      userId = req.params.userId 
+    }
     const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
-    const decodedUserId = decodedToken.userId;
-    if ((parseInt(userId)) !== decodedUserId) {
+    if ((parseInt(userId)) !== parseInt(decodedToken.userId)) {
       throw 'User ID non valable!';
     } else {
       next();

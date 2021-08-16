@@ -18,6 +18,12 @@ module.exports = (sequelize, Sequelize) => {
     password: {
       type: Sequelize.STRING
     },
+    imageUrl: {
+      type: Sequelize.STRING
+    },
+    isAdmin: {
+      type: Sequelize.INTEGER
+    },
     createdAt: {
       type: Sequelize.DATE
     },

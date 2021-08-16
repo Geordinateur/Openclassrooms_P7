@@ -3,7 +3,6 @@
     <Alert :message="messageAlert" :status="statusAlert" :show="showAlert" />
     <b-button 
       id="delete"
-      v-if="parseInt(localStorage.userId) === parseInt(userId)" 
       class="btn-delete" 
       variant="danger" 
       @click="destroy(content, id)">
@@ -36,6 +35,12 @@ export default {
       showAlert: false, 
     }
   },
+  mounted() {
+    axios
+    .get('user/' + localStorage.userId)
+      .then(res => console.log(res.data.user.username))
+      .catch(err => console.log(err))
+  },
   methods: {
     destroy(content, id) {
       axios
@@ -54,9 +59,5 @@ export default {
       this.statusAlert = status
     }
   },
-  mounted() {
-  },
-  watch: {
-  }
 }
 </script>

@@ -45,10 +45,11 @@
         <b-button type="reset" variant="danger">Reset</b-button>
         <b-button b-link href="./user/signup" variant="success">Inscription</b-button>
     </b-form>
+    {{ $store.getters.user }}
   </div>
 </template>
 <script>
-import axios from 'axios';
+import axios from 'axios'
 import Alert from '../components/Alert'
 
 export default {
@@ -78,14 +79,16 @@ export default {
           password: this.form.password
         })
         .then(response => {
-          axios.defaults.headers.common['Authorization'] = response.data.token
+//          axios.defaults.headers.common['Authorization'] = response.data.token
           localStorage.setItem('userToken', response.data.token)
           localStorage.setItem('userId', response.data.userId)
-          this.showAlert = true
-          this.statusAlert = 'success'
-          this.messageAlert = "Votre identification à été réaliser avec succès, vous allez être rediriger..."
+          this.msgAlert(true, "Votre identification à été réaliser avec succès, vous allez être rediriger...", "success")
           this.showForm = false
-          setTimeout(function(){ document.location.href="../user" }, 5000);
+//          this.$store.commit('AUTHENTIFICATION', response.data.user)
+          setTimeout(function(){ document.location.href="../user" }, 2000);
+//          console.log(this.$store)
+//          console.log(response.data.user)
+//          console.log(this.$store.state)
         })
         .catch(() => {
           this.statusAlert = 'danger'
@@ -107,7 +110,14 @@ export default {
       this.$nextTick(() => {
         this.showForm = true
       });
+    },
+    msgAlert(show, message, status) {
+      this.showAlert = show 
+      this.messageAlert = message 
+      this.statusAlert = status
     }
-  }
+  },
+  computed: {
+  },
 }
 </script>

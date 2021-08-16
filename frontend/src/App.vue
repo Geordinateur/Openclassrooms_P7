@@ -23,6 +23,7 @@ axios.defaults.baseURL = 'http://localhost:3000/api/';
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.userToken + ' ' + localStorage.userId; 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
+
 export default {
   name: 'App',
   components: {
@@ -34,7 +35,20 @@ export default {
     return {
       showLoader: false
     }
-  }
+  },
+  mounted() {
+    this.myToken = localStorage.userToken;
+    axios
+      .get('user/' + localStorage.userId)
+      .then(res  => this.$store.commit('AUTHENTIFICATION', res.data.user))
+      .catch(err => console.log('error: ' + err))
+
+  },
+  watch: {
+    myToken(newToken) {
+      localStorage.userToken = newToken;
+    },
+  },
 }
 
 Vue.filter('formatDate', function(value) {

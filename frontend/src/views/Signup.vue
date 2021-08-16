@@ -9,13 +9,13 @@
       </b-card>-->
       <b-form @submit="onSubmit" @reset="onReset" v-if="showForm">
         <b-form-group
-          id="input-group-1"
+          id="username-input-group"
           label="Username:"
-          label-for="input-1"
+          label-for="username-input"
           description="We'll never share your email with anyone else."
           >
           <b-form-input
-            id="input-1"
+            id="username-input"
             v-model="form.username"
             type="text"
             placeholder="Enter username"
@@ -23,35 +23,47 @@
             ></b-form-input>
         </b-form-group>
           <b-form-group
-            id="input-group-2"
+            id="email-input-group"
             label="Email address:"
-            label-for="input-1"
+            label-for="email-input"
             description="We'll never share your email with anyone else."
             >
             <b-form-input
-              id="input-2"
+              id="email-input"
               v-model="form.email"
-              type="email"
+              type="text"
               placeholder="Enter email"
               required
               ></b-form-input>
           </b-form-group>
             <b-form-group 
-              id="input-group-3" 
+              id="password-input-group" 
               label="Password" 
-              label-for="input-3"
+              label-for="password-input"
               description="Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji."
               >
               <b-form-input 
               type="password" 
-              id="text-password" 
-              v-model="form.password"
+              id="password-input" 
+              v-model="form.passwordConfirmed"
               aria-describedby="password-help-block"
               required
               ></b-form-input>
               <b-form-text id="password-help-block">
               </b-form-text>
             </b-form-group>
+<b-form-group 
+              id="password-input-group" 
+              description="Confirmez votre password"
+              >
+              <b-form-input 
+              type="password" 
+              id="password-confirmed-input" 
+              v-model="form.password"
+              aria-describedby="password-help-block"
+              description="sss"
+              required
+              ></b-form-input></b-form-group>
             <b-button type="submit" variant="primary">Submit</b-button>
             <b-button type="reset" variant="danger">Reset</b-button>
 
@@ -78,14 +90,30 @@ export default {
         username: '',
         email: '',
         password: '',
+        passwordConfirmed: '',
         saved: []
       },
     }
   },
   methods: {
+    isValid(value) {
+      return /^[A-zÀ-ú]{3,}$/.test(value);
+    },
+
+    isValidAddress(value) {
+      return /^[0-9]{1,}\s[A-zÀ-ú]{3,}\s[A-zÀ-ú]/.test(value);
+    },
+
+    isValidEmail(value) {
+      return /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(value);
+    }, 
     onSubmit(event) {
       event.preventDefault()
-      console.log(this.form.username + this.form.email + this.form.password)
+      if(!this.isValidEmail(event.target[1].value)) { 
+        this.msgAlert(true, "Votre addresse email est incorrect", "danger")
+      } else if (this.form.password !== this.form.passwordConfirmed) {
+        this.msgAlert(true, "Vos mot de passe ne sont pas identique", "danger")
+      } else {
       axios
         .post('http://localhost:3000/api/user/signup', {
           username: this.form.username,
@@ -93,11 +121,8 @@ export default {
           password: this.form.password
         })
         .then(response => {
-          this.status = 'success'
           this.showForm = false
-          this.showAlert = true
-          this.messageAlert = "Félicitation, votre inscription c'est dérouler avec succes"
-          this.statusAlert = 'success'
+          this.msgAlert(true, "Félicitation, votre inscription c'est dérouler avec succes", "success")
           //              setTimeout(function(){ document.location.href="../user" }, 3000);
           console.log(response);
         })
@@ -108,6 +133,7 @@ export default {
           //          localStorage.removeItem('userToken');
           console.log('ERREUR: ' + error);
         });
+      }
     },
     onReset(event) {
       event.preventDefault()
@@ -121,6 +147,11 @@ export default {
       this.$nextTick(() => {
         this.showForm = true
       });
+    },
+    msgAlert(show, message, status) {
+      this.showAlert = show 
+      this.messageAlert = message 
+      this.statusAlert = status
     },
   },
 }

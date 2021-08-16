@@ -5,31 +5,20 @@ const db = require('../models');
 const User = db.users;
 const Op = db.Sequelize.Op;
 
-exports.getMe = (req, res, next) => {
-	//recherche si l'email est déjà présente dans la DB
-	const token = req.headers.authorization;
-	const decodedToken = jwt.verify(token, 'RANDOM_TOKEN_SECRET');
-	User.findOne({where: { id: decodedToken.userId}})
-		.then(user =>{
-			if(user !== null) {
-			}
-			res.status(201).json({ user });
-		})
-		.catch(error => res.status(500).json({ error }));
-}
-exports.getOne = (req, res, next) => {
-	User.findByPk(req.params.id)
-		.then(user =>{
-			if(user !== null) {
-			}
-			res.status(201).json({ user });
-		})
-		.catch(error => res.status(500).json({ error }));
+exports.getAll = (req, res, next) => {
+	User.findAll()
+		.then(user => res.status(201).json({ user }))
+		.catch(error => res.status(500).json({ error }))
 };
-;
+
+exports.getMe = (req, res, next) => {
+	User.findByPk(req.params.userId)
+		.then(user => res.status(201).json({ user }))
+		.catch(error => res.status(500).json({ error }))
+};
 
 exports.delete = (req, res, next) => {
-	User.findByPk(req.params.id)
+	User.findByPk(req.params.userId)
 		.then(user => {
 			if(user !== null) {
 				user.destroy()
@@ -55,6 +44,7 @@ exports.signup = (req, res, next) => {
 						email: req.body.email,
 						password: hash,
 						isAdmin: 0,
+						imageUrl: req.body.imageUrl,
 						createdAt: Date.now(),
 						updatedAt: Date.now()
 					});
@@ -97,7 +87,8 @@ exports.login = (req, res, next) => {
 		.catch(error => res.status(500).json({ error }));
 }
 exports.update = (req, res, next) => {
-	User.findByPk(req.params.id)
+	console.log(req.body.imageUrl)
+	User.findByPk(req.params.userId)
 		.then(user => {
 			if(req.body.newPassword) { 
 				bcrypt.genSalt(saltRounds, function(err, salt) {
@@ -105,6 +96,7 @@ exports.update = (req, res, next) => {
 						user.username = req.body.username
 						user.password = hash
 						user.email = req.body.email
+						user.imageUrl = req.body.imageUrl
 						user.save()
 							.then(() => res.status(201).json({ message: 'Profil modifié!' }))
 							.catch(error => res.status(500).json({ error: error.errors[0]['message'] }));
@@ -113,6 +105,7 @@ exports.update = (req, res, next) => {
 			}else{
 				user.username = req.body.username
 				user.email = req.body.email
+				user.imageUrl = req.body.imageUrl
 				user.save()
 					.then(() => res.status(201).json({ message: 'Profil modifié!' }))
 					.catch(error => res.status(500).json({ error: error.errors[0]['message'] }));
@@ -121,4 +114,7 @@ exports.update = (req, res, next) => {
 		.catch(error => res.status(500).json({ error }));
 };
 
-
+exports.admin = (req, res, next) => {
+    const token = req.headers.authorization.split(' ')[1];
+	console.log('TOKEN: ' + token)
+};

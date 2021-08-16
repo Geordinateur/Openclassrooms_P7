@@ -5,12 +5,17 @@ const Op = db.Sequelize.Op;
 const fs = require('fs');
 
 exports.create = (req, res, next) => {
+	console.log(req.body.title)
 	const Gifing = Gif.build({
 		title: req.body.title,
-		url: req.body.url,
+		imageUrl: req.body.imageUrl,
 		userId: req.body.userId,
+//		title: 'salut',
+//		imageUrl: 'salut', 
+//		userId: 'salut',
 		createdAt : Date.now(),
-		updatedAt : Date.now()
+		updatedAt : Date.now(),
+//		imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
 	})
 	Gifing.save()
 		.then(() => res.status(201).json({ message: 'Objet enregistré!' }))
@@ -27,7 +32,7 @@ exports.getAll = (req, res, next) => {
 			}
 			res.status(200).json(gifs)
 		})
-		.catch(error => res.status(400).json({ error }))
+		.catch(error => res.status(400).json({ 'erreur': error }))
 };
 
 exports.delete = (req, res, next) => {
@@ -52,7 +57,7 @@ exports.update = (req, res, next) => {
 	Gif.findByPk(req.params.id)
 		.then(gif => {
 			gif.title = req.body.title;
-			gif.url = req.body.url;
+			gif.imageUrl = req.body.imageUrl;
 			gif.updatedAt = Date.now();
 			gif.save()
 				.then(() => res.status(201).json({ message: 'Objet modifié!' }))
@@ -65,4 +70,30 @@ exports.getOne = (req, res, next) => {
 	Gif.findByPk(req.params.id)
 		.then(gif => res.status(200).json(gif))
 		.catch(error => res.status(400).json({ error }));
+};
+
+exports.like = (req, res, next) => {
+  const userId = req.headers.authorization.split(' ')[2];
+	console.log(userId)
+
+	Gif.findByPk(req.params.id)
+		.then(gif => {
+			gif.likes ++
+			gif.userLikes += userId + ','
+			gif.save()
+				.then(() => res.status(201).json({ message: 'Un like de plus pour lui!' }))
+				.catch(error => res.status(400).json({ error: error.errors[0]['message'] }));
+		})
+		.catch(error => res.status(500).json({ error }));
+};
+
+exports.dislike = (req, res, next) => {
+	Gif.findByPk(req.params.id)
+		.then(gif => {
+			gif.likes --
+			gif.save()
+				.then(() => res.status(201).json({ message: 'Un like de moins pour lui!' }))
+				.catch(error => res.status(400).json({ error: error.errors[0]['message'] }));
+		})
+		.catch(error => res.status(500).json({ error }));
 };
