@@ -80,7 +80,8 @@ exports.like = (req, res, next) => {
 
 			let userDislikes = gif.userDislikes
 			let userDislikesNew = userDislikes.join(',')
-			if(userDislikesNew.search(userId)){
+			console.log(userDislikesNew.search(userId))
+			if(parseInt(userDislikesNew.search(userId)) !== -1){
 				let userDislikesOld = userDislikesNew.replace(userId + ',', '')
 				gif.dislikes--
 				gif.userDislikes = userDislikesOld
@@ -100,7 +101,8 @@ exports.dislike = (req, res, next) => {
 		.then(gif => {
 			let userLikes = gif.userLikes
 			let userLikesNew = userLikes.join(',')
-			if(userLikesNew.search(userId)){
+			console.log(userLikesNew.search(userId))
+			if(!parseInt(userLikesNew.search(userId)) !== -1){
 				let userLikesOld = userLikesNew.replace(userId + ',', '')
 				gif.likes--
 				gif.userLikes = userLikesOld
