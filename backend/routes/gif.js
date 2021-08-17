@@ -9,8 +9,8 @@ router.get('/:id', gifCtrl.getOne);
 router.post('/', auth, multer, gifCtrl.create);
 router.post('/:id', auth, gifCtrl.update);
 router.delete('/:id', auth, gifCtrl.delete);
-router.put('/:id', gifCtrl.update);
-router.put('/:id/like', gifCtrl.like);
-router.put('/:id/dislike', gifCtrl.dislike);
+router.put('/:id', auth, gifCtrl.update);
+router.put('/:id/like', auth, gifCtrl.like);
+router.put('/:id/dislike', auth, gifCtrl.dislike);
 
 module.exports = router;

@@ -53,8 +53,14 @@ module.exports = (sequelize, Sequelize) => {
       //      },
     },
     userDislikes: {
-      type: Sequelize.TEXT
-    }
+      type: Sequelize.TEXT,
+      //astuce du web
+      allowNull: false,
+      defaultValue: '0,',
+      get() {
+        return this.getDataValue('userDislikes').split(',')
+      },
+    },
   })
   return Gif;
 };

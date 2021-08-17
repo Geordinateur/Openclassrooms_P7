@@ -9,7 +9,10 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: {
+      title: "Home page!"
+    },
   },
   {
     path: '/blog/:id',
@@ -36,6 +39,9 @@ const routes = [
     path: '/admin', 
     name: 'Administration', 
     component: () => import('../views/Administration.vue'),
+    meta: {
+      title: "Administration web"
+    },
     beforeEnter (route, redirect, next) {
       axios
         .get('user/admin')

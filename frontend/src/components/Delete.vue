@@ -35,12 +35,12 @@ export default {
       showAlert: false, 
     }
   },
-  mounted() {
-    axios
-    .get('user/' + localStorage.userId)
-      .then(res => console.log(res.data.user.username))
-      .catch(err => console.log(err))
-  },
+//  mounted() {
+//    axios
+//    .get('user/' + localStorage.userId)
+//      .then(() => console.log(res.data.user.username))
+//      .catch(err => console.log(err))
+//  },
   methods: {
     destroy(content, id) {
       axios

@@ -62,7 +62,7 @@ export default {
       get('blog/' + this.id)
       .then(response => {
         this.form = { ...response.data.blog }
-        console.log('ah verifier' + response.data)
+//        console.log('ah verifier' + response.data)
       })
       .catch(error => console.log(error))
   },

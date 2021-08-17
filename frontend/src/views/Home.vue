@@ -21,27 +21,24 @@
           Modifié le {{ article.updatedAt | formatDate }} par {{ article.user.username }}
           </p>
 
-
-          <div v-for="(userLikesId, index) in article.userLikes" v-bind:key="index">
-            {{xxx(userLikesId)}} ????
-            {{ articles.canLike }}
-            {{ canILike }}
-            <span v-if="parseInt(userLikesId) === parseInt(localStorage.userId)">Ta dja vote</span>
-          </div>
-          <a href="#" @click="addLike(article.id)" class="likes"><i class="far fa-thumbs-up"></i></a>
+          <div>
+          <a v-if="show(article.userLikes)" href="#" @click="addLike(article.id)"><i class="far fa-thumbs-up likes"></i></a>
+          <i v-else class="fas fa-thumbs-up likes"></i>
           {{ article.likes }}
-          <a href="#" @click="addDislike(article.id)" class="likes dis"><i class="far fa-thumbs-down"></i></a>
+          <a v-if="show(article.userDislikes)" href="#" @click="addDislike(article.id)"><i class="far fa-thumbs-down likes dis"></i></a>
+          <i v-else class="fas fa-thumbs-down likes dis"></i>
           {{ article.dislikes }} 
+          </div>
 
 
 
         </b-card-text>
         <span v-if="article.content" v-show="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(article.userId)"> 
           <Delete message="Supprimer" :id="parseInt(article.id)" content="blog"/>
-          <b-button :href="`blog/` + article.id" variant="secondary">Modifier</b-button>
+          <b-button router-link :to="`blog/` + article.id" variant="secondary">Modifier</b-button>
         </span><span v-else v-show="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(article.userId)">
           <Delete message="Supprimer" :id="parseInt(article.id)" content="gif"/>
-          <b-button :href="`gif/` + article.id" variant="secondary">Modifier</b-button>
+          <b-button router-link :to="`gif/` + article.id" variant="secondary">Modifier</b-button>
         </span>
         <b-button href="#" variant="primary" @click="decouverte(article.userId)">Go somewhere</b-button>
 
@@ -77,7 +74,7 @@ export default {
         userLikes: [],
         canLike: 'true',
       }
-    ],
+      ],
     }
   },
   mounted() {
@@ -112,20 +109,47 @@ export default {
     },
     addLike(id) {
       axios
-      .put('gif/' + id + '/like')
-        .then(() => this.msgAlert(true, "Merci pour votre contribution", "success"))
+        .put('gif/' + id + '/like', { silent: true })
+        .then(() => { 
+          setTimeout(function(){ document.location.reload() }, 1000);
+          this.msgAlert(true, "Merci pour votre contribution", "success")
+        })
         .catch(error => console.log(error))
     },
-    xxx(id) {
-      if(id === localStorage.userId) { this.canILike = 'false' }
+    addDislike(id) {
+      axios
+        .put('gif/' + id + '/dislike')
+        .then(() => {
+          setTimeout(function(){ document.location.reload() }, 1000);
+          this.msgAlert(true, "Merci pour votre contribution", "success")
+        })
+        .catch(error => console.log(error))
     },
+    show(userLikes) {
+      let i = 0
+      while (parseInt(userLikes[i]) !== parseInt(localStorage.userId)){
+        if(i > userLikes.length) {
+          break
+        }
+        i++;
+        if(i === userLikes.length) { return true }
+      }
+    }
   },
   computed: {
     myArraySort: function() {
       return _.orderBy(this.myArray, 'createdAt', 'desc')
     },
+    show2: function() {
+      const myArray = this.myArray
+      let result = '';
+      for (let i = 0; i < myArray.length; i++) {
+        result += JSON.stringify(myArray[i].userLikes) + '<br>'
+      }
+      return result
+    }
   },
-  wath: {
+  watch: {
   },
 }
 </script>

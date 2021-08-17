@@ -9,11 +9,11 @@
       <h1>Bienvenue {{ user.name }} dans votre espace membre</h1>
       <div class="div-button-navuser">
         <b-button variant="warning" @click="logout()">Se déconnecter</b-button>
-        <b-button variant="info" href="/admin" v-if="form.isAdmin === 1">Administration</b-button>
+        <b-button variant="info" router-link to="admin" v-if="form.isAdmin === 1">Administration</b-button>
       </div>
       <ul>
-        <li><a href="./user/blog">Ajouter un article</a></li>
-        <li><a href="./user/gif">Ajouter une image Gif</a></li>
+        <li><router-link to="/user/blog">Ajouter un article</router-link></li>
+        <li><router-link to="/user/gif">Ajouter une image Gif</router-link></li>
         <li><a href="#" @click="showFormUpdate()">Modifier mon profil</a></li>
       </ul>
     </div>

@@ -4,7 +4,9 @@
       <NavBar />
     </div>
     <div class="container mt-4 mb-4">
+      <transition name="fade" mode="out-in">
       <router-view/>
+      </transition>
     </div>
   </div>
 </template>
