@@ -40,12 +40,16 @@ exports.delete = (req, res, next) => {
 	Gif.findByPk(req.params.id)
 		.then(gif => {
 			if(gif !== null) {
+				const filename = gif.imageUrl.split('/images/')[1];
+				console.log(filename)
+				fs.unlink(`images/${filename}`, () =>
+
 				//				fs.unlink(`images/${filename}`, () => {
 				//					const filename = gif.url.split('/images/')[1];
 				Gif.destroy({where: { id: req.params.id}})
 					.then(() => res.status(201).json({ message: 'Objet supprimé!' }))
-					.catch(error => res.status(500).json({ error }));
-				//				});
+					.catch(error => res.status(500).json({ error }))
+				)
 			}else{
 				res.status(404).json({ error: 'Objet non trouvé.' });
 			}

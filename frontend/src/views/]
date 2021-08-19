@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="add">
     <Alert :message="messageAlert" :status="statusAlert" :show="showAlert" />
     <!-- formulaire afficher seulement si on est authentifié -->
     <b-form @submit="onSubmit" @reset="onReset" v-if="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(form.userId)" v-show="showForm">
@@ -47,8 +47,6 @@
     </template>
     <!-- affichage des commentaires -->
     <template>
-      <h3>Les commentaires</h3>
-      <p v-show="comments.length === 0">Soyez le premier à réagir!</p>
       <div v-for="(comment, index) in comments" v-bind:key="index">
         <div v-if="!comment.commentId">
           <b-card
@@ -59,18 +57,10 @@
             <b-card-text>
               <b-avatar variant="info" :src="comment.user.imageUrl"></b-avatar>
               {{ comment.content }}<br>
-              <pre v-show="comment.createdAt !== comment.updatedAt">Modifier le {{ comment.updatedAt }}</pre>
-              <!-- petit formulaire pour modifier son commetaire -->
-              <transition name="fade" mode="out-in">
-              <div v-if="showFormUpdate === comment.id && $store.state.user.id === comment.userId">
-                <FormComment v-show='showFormComment' content="comment" :id="parseInt(comment.id)" option="update"/>
-              </div>
-              </transition>
-
             </b-card-text>
             <template #footer>
+              <b-button @click="showFormUpdate()" variant="secondary">Modifier</b-button>
               <Delete class="float-right" v-show="$store.state.user.id === comment.user.id || $store.state.user.isAdmin" message="Supprimer" :id="parseInt(comment.id)" content="comment"/>
-              <b-button @click="updateComment(comment.id)" variant="secondary">Modifier</b-button>
               {{ comment.updatedAt | formatDate }} par <strong>{{ comment.user.username }}</strong>
             </template>
           </b-card>
@@ -96,9 +86,9 @@ export default {
   data(){
     return {
       localStorage: localStorage,
+      showFormUpdate: false,
       showForm: true,
       showFormComment: true,
-      showFormUpdate: false,
       showAlert :false, 
       messageAlert: '',
       statusAlert: '',
@@ -154,15 +144,6 @@ export default {
       this.messageAlert = message 
       this.statusAlert = status
     },
-    updateComment(id) {
-      if(this.showFormUpdate === false) { 
-        this.showFormUpdate = id 
-      } else if(this.showFormUpdate !== id) { 
-        this.showFormUpdate = id 
-      } else {
-        this.showFormUpdate = false
-      }
-    }
   }
 }
 </script>

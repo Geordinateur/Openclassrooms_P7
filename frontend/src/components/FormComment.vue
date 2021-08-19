@@ -2,7 +2,7 @@
   <div>
     <Alert :message="messageAlert" :status="statusAlert" :show="showAlert" />
     <!-- formulaire pour poster un commentaire -->
-    <b-form @submit="onSubmit" @reset="onReset" v-if="$store.state.auth">
+    <b-form @submit="onSubmit" v-if="$store.state.auth">
       <b-form-group
         id="content"
         label="Votre commentaire"
@@ -15,8 +15,12 @@
           rows="3"
           max-rows="6"
           ></b-form-textarea>
-      </b-form-group>
+      </b-form-group>{{ option}}
+      <span v-if="option === `update`">
+        <b-button href="#" @click="onUpdate" variant="primary" class="btn-add-content">Modifier</b-button>
+      </span><span v-else>
         <b-button type="submit" variant="primary" class="btn-add-content">Commenter</b-button>
+      </span>
     </b-form>
   </div>
 </template>
@@ -42,6 +46,16 @@ export default {
   props: {
     content: {type: String},
     id: {type: Number},
+    option: {type: String},
+  },
+  mounted() {
+    if(this.option === "update") { 
+      console.log(this.content + '/' + this.id)
+      axios
+        .get(this.content + '/' + this.id)
+        .then(res => this.form = res.data)
+        .catch(err => console.log(err))
+    }
   },
   methods: {
     onSubmit(event) {
@@ -71,14 +85,24 @@ export default {
           this.msgAlert(true, error + ': ' +  error.response.data.error, "danger")
         });
     },
-    onReset(event) {
+    onUpdate(event) {
       event.preventDefault()
-      // Reset our form values
-      this.form.title = 
-        this.form.content = ''
-      // Trick to reset/clear native browser form validation state
-      this.showFormComment = false
+      console.log(this.form)
+      axios
+        .put(this.content + '/' + this.id, { 
+          content: this.form.content,
+          updatedBy: this.$store.state.user.id,
+          //...this.form 
+        })
+        .then(() => {
+          this.msgAlert(true, "Votre commentaire à correctement été modifier", "success")
+          setTimeout(function(){ document.location.reload() }, 1000);
+        })
+        .catch(error => {
+          this.msgAlert(true, error + ': ' +  error.response.data.error, "danger")
+        });
     },
+
     msgAlert(show, message, status) {
       this.showAlert = show 
       this.messageAlert = message 

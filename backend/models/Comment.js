@@ -8,13 +8,14 @@ module.exports = (sequelize, Sequelize) => {
       foreignKey: 'commentId'
     },
     content: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       allowNull: false
     },
     userId: {
       allowNull: false,
       type: Sequelize.INTEGER,
       onDelete: 'CASCADE',
+      as: 'leader',
       references: {
         model: 'users',
         key: 'id'
@@ -52,6 +53,16 @@ module.exports = (sequelize, Sequelize) => {
     },
     updatedAt: {
       type: Sequelize.DATE
+    },
+    updatedBy: {
+      allowNull: true,
+      type: Sequelize.INTEGER,
+      onDelete: 'CASCADE',
+      as: 'updated',
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
   })
   return Comment;

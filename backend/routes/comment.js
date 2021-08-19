@@ -7,12 +7,13 @@ const admin = require('../middleware/admin');
 
 //router.post('/', commentCtrl.create);
 //router.get('/:id', commentCtrl.getOne);
+router.get('/', auth, admin, commentCtrl.getAll);
+router.get('/:id', commentCtrl.getOne);
 router.get('/gif/:id', commentCtrl.getGif);
-router.post('/gif/:id', auth, commentCtrl.commentGif);
 router.get('/blog/:id', commentCtrl.getBlog);
+router.post('/gif/:id', auth, commentCtrl.commentGif);
 router.post('/blog/:id', auth, commentCtrl.commentBlog);
-router.delete('/:id', commentCtrl.delete);
-router.get('/', commentCtrl.getAll);
-router.put('/:id', auth, commentCtrl.update);
+router.delete('/:id', auth, commentCtrl.delete);
+router.put('/:id', commentCtrl.update);
 
 module.exports = router;
