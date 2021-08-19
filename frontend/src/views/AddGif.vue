@@ -1,5 +1,5 @@
 <template>
-  <div id="add">
+  <div>
     <Alert :message="messageAlert" :status="statusAlert" :show="showAlert" />
     <b-form @submit="onSubmit" @reset="onReset" v-if="showForm">
       <b-form-group

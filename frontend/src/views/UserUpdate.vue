@@ -1,26 +1,11 @@
 <template>
-  <div id="login">
+  <div>
     <Alert :message="messageAlert" :status="statusAlert" :show="showAlert" />
-    <div v-if="!$store.state.auth">
-      <Login />
-    </div>
-    <div v-else-if="$store.state.auth">
-      <h2>Bienvenue dans votre espace membre</h2>
-      <div class="div-button-navuser">
-        <b-button variant="warning" @click="logout()">Se déconnecter</b-button>
-        <b-button variant="info" router-link to="admin" v-if="form.isAdmin === 1">Administration</b-button>
-      </div>
-      <ul>
-        <li><router-link to="/user/blog">Ajouter un article</router-link></li>
-        <li><router-link to="/user/gif">Ajouter une image Gif</router-link></li>
-        <li><a href="#" @click="showFormUpdate()">Modifier mon profil</a></li>
-      </ul>
-    </div>
-    <transition name="fade">
+    <h2>Modifier votre profil</h2>
     <b-form @submit="onSubmit" v-show="showForm">
       <b-form-group
         id="input-group-1"
-        label="Pseudonyme:"
+        label="Pseudo"
         label-for="input-1"
         description=""
         >
@@ -33,7 +18,7 @@
       </b-form-group>
         <b-form-group
           id="input-group-2"
-          label="Adresse email:"
+          label="Adresse email"
           label-for="input-1"
           description=""
           >
@@ -46,7 +31,7 @@
         </b-form-group>
           <b-form-group
             id="input-group-4"
-            label="Url de votre avatar:"
+            label="Url de votre avatar"
             label-for="input-4"
             >
 
@@ -58,7 +43,7 @@
           </b-form-group>
             <b-form-group
               id="input-group-3"
-              label="Mot de passe:"
+              label="Mot de passe"
               label-for="input-3"
               description="Entrez un nouveau mot de passe si vous désirez le changer"
               >
@@ -83,12 +68,9 @@
                 <b-button type="submit" variant="primary" class="btn-add-content">Modifier mon profil</b-button>
                 <b-button variant="danger" @click="deleteAccount()" class="btn-add-content">Supprimer mon compte</b-button>
     </b-form>
-    </transition>
-    </div>
+  </div>
 </template>
-
 <script>
-import Login from '../components/Login'
 import Alert from '../components/Alert'
 import axios from 'axios'
 import {mapState} from 'vuex'
@@ -96,7 +78,6 @@ import {mapState} from 'vuex'
 export default {
   name: 'App',
   components: {
-    Login,
     Alert
   },
   data(){
@@ -104,7 +85,7 @@ export default {
       messageAlert: '',
       statusAlert: '',
       showAlert: false, 
-      showForm: false,
+      showForm: true,
       //user: '',
       myToken: '',
       form: {

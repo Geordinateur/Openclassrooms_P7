@@ -15,7 +15,6 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: false,
       type: Sequelize.INTEGER,
       onDelete: 'CASCADE',
-      as: 'leader',
       references: {
         model: 'users',
         key: 'id'
@@ -58,7 +57,6 @@ module.exports = (sequelize, Sequelize) => {
       allowNull: true,
       type: Sequelize.INTEGER,
       onDelete: 'CASCADE',
-      as: 'updated',
       references: {
         model: 'users',
         key: 'id'

@@ -26,14 +26,14 @@ const routes = [
   },
   {
     path: '/user',
-    name: 'User',
+    name: 'Espace Membre',
     component: () => import('../views/User.vue'),
-//    beforeEnter (route, redirect, next) {
-//      axios
-//        .get('user/' + localStorage.userId)
-//        .then(() => next())
-//        .catch(() => redirect('/'))
-//    }
+    //    beforeEnter (route, redirect, next) {
+    //      axios
+    //        .get('user/' + localStorage.userId)
+    //        .then(() => next())
+    //        .catch(() => redirect('/'))
+    //    }
   },
   {
     path: '/admin', 
@@ -50,8 +50,13 @@ const routes = [
     }
   },
   {
+    path: '/user/update',
+    name: 'Espace Membre',
+    component: () => import('../views/UserUpdate.vue')
+  },
+  {
     path: '/user/signup',
-    name: 'Signup',
+    name: 'Espace Membre',
     component: () => import('../views/Signup.vue')
   },
   {

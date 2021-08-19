@@ -7,21 +7,6 @@ const User = db.users;
 const Op = db.Sequelize.Op;
 const { QueryTypes } = require('sequelize');
 
-exports.create = (req, res, next) => {
-	const Commenting = Comment.build({
-		content: req.body.content,
-		link: req.body.link,
-		replyAt: req.body.replyAt,
-		author: 'a renseigner',
-		//author: userId,
-		createdAt : Date.now(),
-		updatedAt : Date.now()
-	});
-	Commenting.save()
-		.then(() => res.status(201).json({ message: 'Objet enregistré!' }))
-		.catch(error => res.status(400).json({ error: error.errors[0]['message'] }));
-};
-
 exports.getGif = (req, res, next) => {
 	//	Comment.belongsTo(User)
 	//	Comment.belongsToMany(Comment, {as: 'replyAt', foreignKey: 'id'})
@@ -50,10 +35,10 @@ exports.getGif = (req, res, next) => {
 };
 
 exports.commentGif= (req, res, next) => {
-	const Commenting = Comment.build({ ...req.body });
+	const Commenting = Comment.build({ ...req.body })
 	Commenting.save()
 		.then(() => res.status(201).json({ message: 'Objet enregistré!' }))
-		.catch(error => res.status(400).json({ error: error.errors[0]['message'] }));
+		.catch(error => res.status(400).json({ error: error.errors[0]['message'] }))
 };
 
 exports.getBlog = (req, res, next) => {
@@ -64,10 +49,10 @@ exports.getBlog = (req, res, next) => {
 };
 
 exports.commentBlog = (req, res, next) => {
-	const Commenting = Comment.build({ ...req.body });
+	const Commenting = Comment.build({ ...req.body })
 	Commenting.save()
 		.then(() => res.status(201).json({ message: 'Objet enregistré!' }))
-		.catch(error => res.status(400).json({ error: error.errors[0]['message'] }));
+		.catch(error => res.status(400).json({ error: error.errors[0]['message'] }))
 };
 
 exports.getAll = (req, res, next) => {
@@ -91,7 +76,6 @@ exports.delete = (req, res, next) => {
 				Comment.destroy({where: { id: req.params.id}})
 					.then(() => res.status(201).json({ message: 'Commentaire supprimé!' }))
 					.catch(error => res.status(500).json({ error }));
-				//				});
 			}else{
 				res.status(404).json({ error: 'Commentaire non trouvé.' })
 			}
@@ -100,7 +84,6 @@ exports.delete = (req, res, next) => {
 };
 
 exports.update = (req, res, next) => {
-	console.log(req.params.id + ' ' + req.body.content + ' ' + req.body.updatedBy)
 	Comment.findByPk(req.params.id)
 		.then(comment => {
 			if(comment !== null) {

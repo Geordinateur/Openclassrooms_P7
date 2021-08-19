@@ -1,53 +1,62 @@
 <template>
-  <div v-if="!myToken" id="login">
+  <div class="flex-column w-100 p-2 rounded">
+  <div class="text-center" v-if="!$store.state.auth">
+    <h2>Identification</h2>
     <Alert :status="statusAlert" :message="messageAlert" :show="showAlert" />
+    <!-- formulaire d'identification -->
     <b-form @submit="onSubmit" @reset="onReset" v-if="showForm">
       <b-form-group
         id="input-group-1"
-        label="Email address:"
-        label-for="input-1"
-        description="We'll never share your email with anyone else."
         >
         <b-form-input
           id="input-1"
           v-model="form.email"
           type="email"
-          placeholder="Enter email"
+          placeholder="Entrez votre adresse email"
           required
           ></b-form-input>
       </b-form-group>
         <b-form-group 
           id="input-group-2" 
-          label="Password" 
-          label-for="input-2"
-          description="Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji."
           >
           <b-form-input 
+          class="mt-2 mb-2"
           type="password" 
           id="text-password" 
           v-model="form.password"
           aria-describedby="password-help-block"
+          placeholder="Entrez votre mot de passe"
           required
           ></b-form-input>
           <b-form-text id="password-help-block">
           </b-form-text>
         </b-form-group>
-        <b-form-group id="input-group-4" v-slot="{ ariaDescribedby }">
-          <b-form-checkbox-group
-            v-model="form.saved"
-            id="checkboxes-4"
-            :aria-describedby="ariaDescribedby"
-            >
-            <b-form-checkbox value="save">Se souvenir de moi</b-form-checkbox>
-          </b-form-checkbox-group>
-        </b-form-group>
-        <b-button type="submit" variant="primary">Submit</b-button>
-        <b-button type="reset" variant="danger">Reset</b-button>
-        <b-button b-link href="./user/signup" variant="success">Inscription</b-button>
+        <div>
+          <b-button type="submit" variant="primary">Se connecter</b-button>
+          <b-button type="reset" variant="danger">Effacer</b-button>
+        </div>
+        <br>
+        <h2>Inscription</h2>
+        <p>Vous n'êtes pas encore inscrit? <router-link to="/user/signup">Inscrivez-vous!</router-link></p>
     </b-form>
-    {{ $store.getters.user }}
+  </div>
+  <div v-else>
+    <Alert :status="statusAlert" :message="messageAlert" :show="showAlert" />
+  <p class="text-center"><b-avatar variant="info" :src="$store.state.user.imageUrl" size="8rem"></b-avatar></p>
+  <p class="text-center">Bienvenue <strong>{{ $store.state.user.name }}</strong></p>
+  
+<b-list-group>
+  <b-list-group-item router-link to="/">Aller à l'accueil</b-list-group-item>
+  <b-list-group-item router-link to="/user/blog" variant="primary">Ajouter un article</b-list-group-item>
+  <b-list-group-item router-link to="/user/gif" variant="primary">Ajouter une image</b-list-group-item>
+  <b-list-group-item router-link to="/user/update" variant="info">Modifier le profil</b-list-group-item>
+  <b-list-group-item href="#" @click="logout" variant="warning">Se déconnecter</b-list-group-item>
+  <b-list-group-item router-link to="/admin" variant="dark" v-if="$store.state.user.isAdmin">Administration</b-list-group-item>
+</b-list-group>
+  </div>
   </div>
 </template>
+
 <script>
 import axios from 'axios'
 import Alert from '../components/Alert'
@@ -63,40 +72,23 @@ export default {
       showAlert: false, 
       showForm: true,
       myToken: '',
-      form: {
-        email: '',
-        password: '',
-        saved: []
-      },
+      form: { },
     }
   },
   methods: {
     onSubmit(event) {
       event.preventDefault()
       axios
-        .post('http://localhost:3000/api/user/login', {
-          email: this.form.email,
-          password: this.form.password
-        })
+        .post('http://localhost:3000/api/user/login', {...this.form})
         .then(response => {
-//          axios.defaults.headers.common['Authorization'] = response.data.token
+          //création d'un petit localStorage pour garder le token
           localStorage.setItem('userToken', response.data.token)
           localStorage.setItem('userId', response.data.userId)
-          this.msgAlert(true, "Votre identification à été réaliser avec succès, vous allez être rediriger...", "success")
+          this.msgAlert(true, "Vous êtes maintenant identifier.", "success")
           this.showForm = false
-//          this.$store.commit('AUTHENTIFICATION', response.data.user)
-          setTimeout(function(){ document.location.href="../user" }, 2000);
-//          console.log(this.$store)
-//          console.log(response.data.user)
-//          console.log(this.$store.state)
+          setTimeout(function(){ document.location.href="/" }, 2000);
         })
-        .catch(() => {
-          this.statusAlert = 'danger'
-          this.messageAlert = "Votre mot de passe ou identifiants sont incorrects."
-          this.showAlert = true
-          this.showForm = true
-          localStorage.removeItem('userToken') 
-        });
+        .catch(() => this.msgAlert(true, "Votre mot de passe ou identifiants sont incorrects.", "danger"));
     },
     onReset(event) {
       event.preventDefault()
@@ -111,13 +103,31 @@ export default {
         this.showForm = true
       });
     },
+    logout() {
+      event.preventDefault()
+      this.myToken = ''
+      localStorage.clear()
+      this.$store.commit('AUTHENTIFICATION', '')
+          this.msgAlert(true, "Vous avez été déconnecter, je vous redirige vers la sortie...", "secondary")
+          setTimeout(function(){ document.location.href="/" }, 2000);
+    },
+    deleteAccount() {
+      event.preventDefault()
+      axios
+        .delete('user/' + localStorage.userId)
+        .then(() => {
+          this.msgAlert(true, "Compte supprimer!", "danger")
+          this.logout()
+          this.showForm = false
+          setTimeout(function(){ this.showAlert = false }, 3000);
+        })
+        .catch(error => console.log('erreur: ' + error));
+    },
     msgAlert(show, message, status) {
       this.showAlert = show 
       this.messageAlert = message 
       this.statusAlert = status
     }
-  },
-  computed: {
   },
 }
 </script>

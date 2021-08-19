@@ -1,18 +1,33 @@
 <template>
   <transition name="fade" mode="out-in">
-  <b-card v-show="show" :bg-variant="status" text-variant="white" class="text-center mb-2">
-    <b-card-text>{{ message }}</b-card-text>
-  </b-card>
+  <div>
+    <b-alert :variant="status" v-show="show" show>{{ message }}</b-alert>
+  </div>
   </transition>
 </template>
 
 <script>
 export default {
-  name: 'Alert',
+  data() {
+    return {
+    }
+  },
   props: {
-    status: {type: String, default: 'success'},
+    status: {type: String, default: 'default'},
     message: {type: String},
     show: {type: Boolean, default: false}
-  }
+  },
+  methods: {
+  },
 }
 </script>
+
+
+<style>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s, transform .5s;
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0;
+}
+</style>

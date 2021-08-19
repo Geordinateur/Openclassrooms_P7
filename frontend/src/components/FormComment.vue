@@ -15,7 +15,8 @@
           rows="3"
           max-rows="6"
           ></b-form-textarea>
-      </b-form-group>{{ option}}
+      </b-form-group>
+      <!-- condition pour le modifier ou l'ajouter -->
       <span v-if="option === `update`">
         <b-button href="#" @click="onUpdate" variant="primary" class="btn-add-content">Modifier</b-button>
       </span><span v-else>
@@ -50,7 +51,6 @@ export default {
   },
   mounted() {
     if(this.option === "update") { 
-      console.log(this.content + '/' + this.id)
       axios
         .get(this.content + '/' + this.id)
         .then(res => this.form = res.data)
@@ -92,7 +92,6 @@ export default {
         .put(this.content + '/' + this.id, { 
           content: this.form.content,
           updatedBy: this.$store.state.user.id,
-          //...this.form 
         })
         .then(() => {
           this.msgAlert(true, "Votre commentaire à correctement été modifier", "success")
@@ -102,7 +101,6 @@ export default {
           this.msgAlert(true, error + ': ' +  error.response.data.error, "danger")
         });
     },
-
     msgAlert(show, message, status) {
       this.showAlert = show 
       this.messageAlert = message 

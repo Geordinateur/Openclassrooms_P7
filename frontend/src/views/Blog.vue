@@ -3,6 +3,7 @@
     <Alert :message="messageAlert" :status="statusAlert" :show="showAlert" />
     <!-- formulaire pour modifier l'article, afficher seulement si on est authentifié et reconnu comme auteur ou admin-->
     <b-form @submit="onSubmit" @reset="onReset" v-if="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(form.userId)" v-show="showForm">
+      <h2>Modifier votre article</h2>
       <b-form-group
         id="input-group-title"
         label="Titre de l'article:"
@@ -29,8 +30,8 @@
             max-rows="6"
             ></b-form-textarea>
         </b-form-group>
-        <b-button type="submit" variant="primary" class="btn-add-content">Modfier</b-button>
-    </b-form><br>
+          <p><b-button type="submit" variant="primary" class="btn-add-content">Modfier</b-button></p>
+    </b-form>
     <!-- affichage de l'article -->
     <template>
       <h2>{{ form.title }}</h2>
@@ -41,20 +42,21 @@
       {{ form.content }}
       </p>
       <p v-if="form.createdAt !== form.updatedAt">
-      Modifié le {{ form.updatedAt | formatDate }} par {{ form.user.username }}
+      Modifié le {{ form.updatedAt | formatDate }}
       </p>
     </template>
+    <!-- affichage des commentaires -->
     <template>
-      <!-- affichage des commentaires -->
+      <h3>Les commentaires</h3>
+      <p v-show="comments.length === 0">Soyez le premier à réagir!</p>
       <div v-for="(comment, index) in comments" v-bind:key="index">
         <div v-if="!comment.commentId">
           <b-card
-            tag="article"
             style="max-width: 100%;"
             class="mb-2"
             >
             <b-card-text>
-              <b-avatar variant="info" :src="comment.user.imageUrl"></b-avatar>
+              <b-avatar variant="info" :src="comment.user.imageUrl" size="4rem"></b-avatar>
               {{ comment.content }}<br>
             </b-card-text>
             <template #footer>

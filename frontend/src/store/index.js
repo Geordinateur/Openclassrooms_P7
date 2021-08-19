@@ -28,6 +28,7 @@ export default new Vuex.Store({
       state.auth = true
       state.user.name = payload.username
       state.user.id = payload.id
+      state.user.imageUrl = payload.imageUrl
       if(parseInt(payload.isAdmin) === 1) {state.user.isAdmin = true}
     },
   },

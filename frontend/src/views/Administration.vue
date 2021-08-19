@@ -1,7 +1,6 @@
 <template>
   <div>
     <Alert :message="messageAlert" :status="statusAlert" :show="showAlert" />
-    <h1>{{ $route.meta.title }}</h1>
     <h2>Utilisateurs</h2>
     <b-table striped hover :items="users" :fields="fields">
       <template #cell(delete)="data">
@@ -42,44 +41,24 @@ export default {
   data() {
     return {
       fields: [
-        {
-          key: 'id',
-          sortable: true
-        },
-        {
-          key: 'username',
-        },
-        {
-          key: 'email',
-          label: 'Adresse email',
-        },
-        {
-          key: 'delete',
-          variant: 'danger',
-          label: 'Supprimer', 
-        }],
+        { key: 'id', sortable: true },
+        { key: 'username' },
+        { key: 'email', label: 'Adresse email' },
+        { key: 'delete', variant: 'danger', label: 'Supprimer', }
+      ],
       fieldsComment: [
         { key: 'id', },
         { key: 'content', label: 'Message'},
         { key: 'user.username', label: 'Auteur'},
         { key: 'delete', variant: 'danger', label: 'Supprimer'}
-    ],
+      ],
       contents: [
-        {
-          key: 'id',
-        },{
-          key: 'title',
-        },{
-          key: 'user.username',
-          label: 'Auteur',
-        },{
-          key: 'createdAt', 
-          sortable: true,
-        }, {
-          key: 'delete',
-          variant: 'danger',
-          label: 'Supprimer', 
-        }],
+        { key: 'id' },
+        { key: 'title' },
+        { key: 'user.username', label: 'Auteur' },
+        { key: 'createdAt', sortable: true },
+        { key: 'delete', variant: 'danger', label: 'Supprimer' }
+      ],
       users: [],
       blogs: [],
       gifs: [],

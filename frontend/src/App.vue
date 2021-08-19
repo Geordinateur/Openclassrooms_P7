@@ -1,12 +1,22 @@
 <template>
-  <div id="app">
+  <div>
     <div id="nav">
       <NavBar />
     </div>
-    <div class="container mt-4 mb-4">
-      <transition name="fade-page" mode="out-in">
-      <router-view/>
-      </transition>
+    <div class="container h-100 p-4">
+      <h1>{{this.$route.name}}</h1>
+      <div class="row h-100">
+        <aside class="col-12 col-lg-3 order-lg-2">
+          <nav class="navbar navbar-expand navbar-light bg-light flex-md-column flex-row align-items-start pt-1 rounded">
+              <Login />
+          </nav>
+        </aside>
+        <main class="col order-lg-1">
+          <transition name="fade-page" mode="out-in">
+          <router-view/>
+          </transition>
+        </main>
+      </div>
     </div>
   </div>
 </template>
@@ -20,6 +30,7 @@ import NavBar from './components/NavBar.vue'
 import axios from 'axios'
 import Vue from 'vue'
 import moment from 'moment'
+import Login from './components/Login'
 
 axios.defaults.baseURL = 'http://localhost:3000/api/';
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.userToken + ' ' + localStorage.userId; 
@@ -30,6 +41,7 @@ export default {
   name: 'App',
   components: {
     NavBar,
+    Login,
   },
   computed: {
   },
@@ -50,6 +62,10 @@ export default {
     myToken(newToken) {
       localStorage.userToken = newToken;
     },
+    //    '$route' (to, from) {
+    '$route' (to) {
+      document.title = to.meta.title || 'Groupomania'
+    }
   },
 }
 

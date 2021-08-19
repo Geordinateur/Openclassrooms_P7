@@ -3,6 +3,8 @@
     <Alert :message="messageAlert" :status="statusAlert" :show="showAlert" />
     <!-- formulaire afficher seulement si on est authentifié -->
     <b-form @submit="onSubmit" @reset="onReset" v-if="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(form.userId)" v-show="showForm">
+      <h2>Modifier votre image</h2>
+      <p>
       <b-form-group
         id="input-group-title"
         label="Titre de l'article:"
@@ -31,7 +33,8 @@
             ></b-form-input>
         </b-form-group>
           <b-button type="submit" variant="primary" class="btn-add-content">Modifier</b-button>
-    </b-form><br>
+      </p>
+    </b-form>
     <!-- affichage de l'image-->
     <template>
       <h2>{{ form.title }}</h2>
@@ -52,12 +55,11 @@
       <div v-for="(comment, index) in comments" v-bind:key="index">
         <div v-if="!comment.commentId">
           <b-card
-            tag="article"
             style="max-width: 100%;"
             class="mb-2"
             >
             <b-card-text>
-              <b-avatar variant="info" :src="comment.user.imageUrl"></b-avatar>
+              <b-avatar variant="info" :src="comment.user.imageUrl" size="4rem"></b-avatar>
               {{ comment.content }}<br>
               <pre v-show="comment.createdAt !== comment.updatedAt">Modifier le {{ comment.updatedAt }}</pre>
               <!-- petit formulaire pour modifier son commetaire -->

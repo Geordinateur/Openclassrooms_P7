@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <Alert :message="messageAlert" :status="statusAlert" :show="showAlert" />
+    <!-- on récupere puis on liste le grand tableau "myArray" qui contient tout le contenu... -->
     <div v-for="(article, index) in myArraySort" v-bind:key="index">
       <b-card
         :title="article.title"
@@ -11,7 +12,9 @@
         >
         <b-card-text v-if="article.content">
           {{ article.content.substr(0, 355) }}
+          <!-- si le texte est trop long, on ajoute ... -->
           <span v-show="article.content.length > 355">...<router-link :to="`blog/` + article.id">Lire la suite</router-link></span>
+          <!-- condition si la date de mise a jour est pas la même que la date d'ajout, alors on le notifi -->
           <div v-if="article.createdAt !== article.updatedAt">
             Modifié le {{ article.updatedAt | formatDate }} par {{ article.user.username }}
           </div>
@@ -21,6 +24,7 @@
           <p v-if="article.createdAt !== article.updatedAt">
           Modifié le {{ article.updatedAt | formatDate }} par {{ article.user.username }}
           </p>
+          <!-- like et dislike pour les images seulment -->
           <div>
             <a v-if="canIVote(article.userLikes)" href="#" @click="addLike(article.id)"><i class="far fa-thumbs-up likes"></i></a>
             <i v-else class="fas fa-thumbs-up likes"></i>
@@ -31,12 +35,14 @@
           </div>
         </b-card-text>
         <span v-if="article.content"> 
+          <!-- condition pour afficher le bouton "modifier" le post -->
           <span v-show="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(article.userId)">
           <Delete message="Supprimer" :id="parseInt(article.id)" content="blog"/>
           <b-button router-link :to="`blog/` + article.id" variant="secondary">Modifier</b-button>
           </span>
         <b-button router-link :to="`blog/` + article.id" variant="primary">Commentaires</b-button>
         </span><span v-else>
+          <!-- condition pour afficher le bouton "modifier" l'image-->
           <span v-show="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(article.userId)">
           <Delete message="Supprimer" :id="parseInt(article.id)" content="gif"/>
           <b-button router-link :to="`gif/` + article.id" variant="secondary">Modifier</b-button>
@@ -50,7 +56,7 @@
 
 <script>
 // @ is an alias to /src
-  import axios from 'axios'
+import axios from 'axios'
 import _ from 'lodash'
 import Alert from '../components/Alert'
 import Delete from '../components/Delete'
@@ -87,9 +93,7 @@ export default {
         this.myArray = this.blog
         this.showAlert = false
       })
-      .catch(()=> {
-        this.msgAlert(true, "Aucun contenu pour le moment.", "secondary")
-      })
+      .catch(()=> this.msgAlert(true, "Aucun contenu pour le moment.", "secondary"))
     axios
       .get('gif')
       .then(response => {
@@ -98,6 +102,7 @@ export default {
         this.myArray = this.myArray.concat(this.gif)
       })
       .catch(() => {
+        //petite condition si le message est déja afficher, ne l'affichons pas deux fois
         if(this.showAlert === true) {
           this.msgAlert(true, "Aucun contenu pour le moment.", "secondary")
         }
@@ -127,18 +132,7 @@ export default {
         })
         .catch(error => console.log(error))
     },
-//    howManyComment(content, id) {
-//      axios
-//        .get('comment/' + content + '/' + id)
-//        .then(res => { 
-//          const result = res.data.length
-//          return console.log(result)
-//          console.log(this.$store.state.article)
-//})
-      //        .then(res => { this.nbComment.push(res.data.length) })
-//        .catch(err => console.log(err))
-//    },
-    // on verifie si l'utilisateur peut voté ou a déjà voté
+    // on verifie si l'utilisateur peut voté ou a déjà voté (j'ai perdu quelques cheveux ici)
     canIVote(userLikes) {
       let i = 0
       while (parseInt(userLikes[i]) !== parseInt(localStorage.userId)){
@@ -154,8 +148,6 @@ export default {
     myArraySort: function() {
       return _.orderBy(this.myArray, 'createdAt', 'desc')
     },
-  },
-  watch: {
   },
 }
 </script>
