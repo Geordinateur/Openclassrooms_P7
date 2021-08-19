@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 //const mysql = require('mysql');
-//const mongoose = require('mongoose');
 
 const userRoutes = require('./routes/user');
 const gifRoutes = require('./routes/gif');
@@ -34,11 +33,5 @@ const db = require("./models");
 db.sequelize.sync();
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
-//app.use('/api/sauces', saucesRoutes);
-//app.use('/api/auth', userRoutes)
-
-
-
-
 
 module.exports = app;

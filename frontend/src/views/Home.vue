@@ -13,7 +13,7 @@
         <b-card-text v-if="article.content">
           {{ article.content.substr(0, 355) }}
           <!-- si le texte est trop long, on ajoute ... -->
-          <span v-show="article.content.length > 355">...<router-link :to="`blog/` + article.id">Lire la suite</router-link></span>
+          <span v-show="article.content.length > 355">... <router-link :to="`blog/` + article.id">Lire la suite</router-link></span>
           <!-- condition si la date de mise a jour est pas la même que la date d'ajout, alors on le notifi -->
           <div v-if="article.createdAt !== article.updatedAt">
             Modifié le {{ article.updatedAt | formatDate }} par {{ article.user.username }}

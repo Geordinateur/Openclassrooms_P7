@@ -2,11 +2,6 @@ module.exports = (sequelize, Sequelize) => {
   const Blog = sequelize.define("blogs", {})
   const Gifs = sequelize.define("gifs", {})
   const User = sequelize.define("users", {
-    //    _id: {
-    //      primaryKey: true,
-    //      type: Sequelize.UUID,
-    //      defaultValue: Sequelize.UUIDV4
-    //    },
     username: {
       type: Sequelize.STRING,
     },
