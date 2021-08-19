@@ -118,7 +118,7 @@ export default {
       event.preventDefault()
       this.myToken = ''
       localStorage.clear()
-      this.$store.commit('authentification')
+      this.$store.commit('AUTHENTIFICATION', '')
           this.msgAlert(true, "Vous allez être déconnectez...", "info")
           setTimeout(function(){ document.location.href="../user" }, 2000);
     },

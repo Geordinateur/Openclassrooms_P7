@@ -29,7 +29,7 @@ export default new Vuex.Store({
       state.user.name = payload.username
       state.user.id = payload.id
       if(parseInt(payload.isAdmin) === 1) {state.user.isAdmin = true}
-    }
+    },
   },
   getters: {
     userSaw(state) {

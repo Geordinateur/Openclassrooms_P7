@@ -93,7 +93,7 @@ export default {
           this.messageAlert = "Votre Gif à été ajouter avec succes."
           this.statusAlert = 'success'
           this.showAlert = true
-          setTimeout(function(){ document.location.href="../user" }, 3000);
+//          setTimeout(function(){ document.location.href="../user" }, 3000);
         })
         .catch(error => {
           this.messageAlert = error + ': ' +  error.response.data.error

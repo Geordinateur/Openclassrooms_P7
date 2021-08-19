@@ -70,7 +70,7 @@ export default {
           this.messageAlert = "Votre post à été ajouter avec succes."
           this.statusAlert = 'success'
           this.showAlert = true
-          setTimeout(function(){ document.location.href="../user" }, 3000);
+          setTimeout(function(){ document.location.href="../user" }, 2000);
         })
         .catch(error => {
           this.messageAlert = error

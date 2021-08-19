@@ -54,7 +54,6 @@ exports.delete = (req, res, next) => {
 };
 
 exports.update = (req, res, next) => {
-	console.log('??????????????????????????')
 	Gif.findByPk(req.params.id)
 		.then(gif => {
 			gif.title = req.body.title;
@@ -68,7 +67,8 @@ exports.update = (req, res, next) => {
 };
 
 exports.getOne = (req, res, next) => {
-	Gif.findByPk(req.params.id)
+	Gif.belongsTo(User, { foreignKey: 'userId' })
+	Gif.findByPk(req.params.id, {include: User})
 		.then(gif => res.status(200).json(gif))
 		.catch(error => res.status(400).json({ error }));
 };
@@ -101,8 +101,7 @@ exports.dislike = (req, res, next) => {
 		.then(gif => {
 			let userLikes = gif.userLikes
 			let userLikesNew = userLikes.join(',')
-			console.log(userLikesNew.search(userId))
-			if(!parseInt(userLikesNew.search(userId)) !== -1){
+			if(parseInt(userLikesNew.search(userId)) !== -1){
 				let userLikesOld = userLikesNew.replace(userId + ',', '')
 				gif.likes--
 				gif.userLikes = userLikesOld

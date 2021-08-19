@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div id="add">
     <Alert :message="messageAlert" :status="statusAlert" :show="showAlert" />
-    <!-- formulaire pour modifier l'article, afficher seulement si on est authentifié et reconnu comme auteur ou admin-->
+    <!-- formulaire afficher seulement si on est authentifié -->
     <b-form @submit="onSubmit" @reset="onReset" v-if="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(form.userId)" v-show="showForm">
       <b-form-group
         id="input-group-title"
@@ -17,35 +17,36 @@
           ></b-form-input>
       </b-form-group>
         <b-form-group
-          id="textarea-group-content"
-          label="Contenu de l'article:"
-          label-for="textarea-content"
+          id="input-group-imageUrl"
+          label="Url de l'image:"
+          label-for="input-imageUrl"
           description=""
           >
-          <b-form-textarea
-            id="textarea-content"
-            v-model="form.content"
-            rows="3"
-            max-rows="6"
-            ></b-form-textarea>
+          <b-form-input
+            id="input-imageUrl"
+            v-model="form.imageUrl"
+            type="text"
+            placeholder="Url"
+            required
+            ></b-form-input>
         </b-form-group>
-        <b-button type="submit" variant="primary" class="btn-add-content">Modfier</b-button>
+          <b-button type="submit" variant="primary" class="btn-add-content">Modifier</b-button>
     </b-form><br>
-    <!-- affichage de l'article -->
+    <!-- affichage de l'image-->
     <template>
       <h2>{{ form.title }}</h2>
       <p>
       Ajouté le {{ form.createdAt | formatDate }} par {{ form.user.username }}
       </p>
       <p>
-      {{ form.content }}
+      <img :src="form.imageUrl" class="imageArticle">
       </p>
       <p v-if="form.createdAt !== form.updatedAt">
       Modifié le {{ form.updatedAt | formatDate }} par {{ form.user.username }}
       </p>
     </template>
+    <!-- affichage des commentaires -->
     <template>
-      <!-- affichage des commentaires -->
       <div v-for="(comment, index) in comments" v-bind:key="index">
         <div v-if="!comment.commentId">
           <b-card
@@ -65,8 +66,7 @@
         </div>
       </div>
     </template>
-    <!-- formulaire pour ajouter un commentaire afficher seulement si authentifié -->
-    <FormComment v-show='showFormComment' content="blog" :id="parseInt($route.params.id)"/>
+    <FormComment v-show='showFormComment' content="gif" :id="parseInt($route.params.id)"/>
   </div>
 </template>
 
@@ -92,30 +92,38 @@ export default {
       statusAlert: '',
       id: this.$route.params.id,
       comments: '',
-      form: {
-      },
+      form: {},
     }
   },
   mounted() {
-    //récupere l'article via une promise de axios
-    axios.
-      get('blog/' + this.id)
-      .then(response => this.form = { ...response.data.blog })
-      .catch(error => console.log(error))
-    //récupere les commentaires de la même facon
     axios
-      .get('comment/blog/' + this.id)
-      .then(res => this.comments = res.data )
+      .get('gif/' + this.id)
+      .then(response => {
+        this.form = { ...response.data }
+      })
+      .catch(error => console.log(error))
+    axios
+      .get('comment/gif/' + this.id)
+      .then(res => {
+        console.log(res.data)
+        this.comments = res.data
+      })
       .catch(err  => console.log(err))
   },
   methods: {
-    //modifier l'article
     onSubmit(event) {
       event.preventDefault()
+      console.log(this.id)
       axios
-        .put('blog/' + this.id, { ...this.form, userId: this.$store.state.user.id, updatedAt: Date.now() })
-        .then(() => this.msgAlert(true, "Votre post à correctement été modifier", "success"))
-        .catch(error => this.msgAlert(true, error, "danger"))
+        .put('gif/' + this.id, {
+          ...this.form, updatedAt: Date.now()
+        })
+        .then(() => {
+          this.msgAlert(true, "Votre image à correctement été modifier", "warning")
+        })
+        .catch(error => {
+          this.msgAlert(true, error + ': ' +  error.response.data.error, "danger")
+        });
     },
     onReset(event) {
       event.preventDefault()
@@ -129,7 +137,6 @@ export default {
         this.showForm = true
       });
     },
-    //afficher mon message d'alerte
     msgAlert(show, message, status) {
       this.showAlert = show 
       this.messageAlert = message 
@@ -138,3 +145,10 @@ export default {
   }
 }
 </script>
+
+<style>
+.imageArticle {
+  border-radius: 100px;
+  max-width: 100%;
+}
+</style>

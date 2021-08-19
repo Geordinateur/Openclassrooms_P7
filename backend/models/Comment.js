@@ -5,24 +5,47 @@ module.exports = (sequelize, Sequelize) => {
       autoIncrement: true,
       allowNull: false,
       primaryKey: true,
+      foreignKey: 'commentId'
     },
     content: {
       type: Sequelize.STRING,
       allowNull: false
     },
-    author: {
-      type: Sequelize.STRING
-    },
-    link: {
+    userId: {
       allowNull: false,
       type: Sequelize.INTEGER,
+      onDelete: 'CASCADE',
+      references: {
+        model: 'users',
+        key: 'id'
+      }
+    },
+    linkPost: {
+      allowNull: true,
+      type: Sequelize.INTEGER,
+      onDelete: 'CASCADE',
       references: {
         model: 'blogs',
         key: 'id'
       }
     },
-    replyAt: {
-      type: Sequelize.STRING
+    linkGif: {
+      allowNull: true,
+      type: Sequelize.INTEGER,
+      onDelete: 'CASCADE',
+      references: {
+        model: 'gifs',
+        key: 'id'
+      }
+    },
+    commentId: {
+      allowNull: true,
+      type: Sequelize.INTEGER,
+      onDelete: 'CASCADE',
+      references: {
+        model: 'comments',
+        key: 'id',
+      }
     },
     createdAt: {
       type: Sequelize.DATE

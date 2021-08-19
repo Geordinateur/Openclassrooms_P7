@@ -10,38 +10,39 @@
         :sub-title="article.createdAt | formatDate"
         >
         <b-card-text v-if="article.content">
-          {{ article.content }}
+          {{ article.content.substr(0, 355) }}
+          <span v-show="article.content.length > 355">...<router-link :to="`blog/` + article.id">Lire la suite</router-link></span>
           <div v-if="article.createdAt !== article.updatedAt">
             Modifié le {{ article.updatedAt | formatDate }} par {{ article.user.username }}
           </div>
         </b-card-text>
         <b-card-text v-else>
-          <img :src="article.imageUrl" :alt="article.title" class="image-article">
+          <p><img :src="article.imageUrl" :alt="article.title" class="image-article"></p>
           <p v-if="article.createdAt !== article.updatedAt">
           Modifié le {{ article.updatedAt | formatDate }} par {{ article.user.username }}
           </p>
-
           <div>
-          <a v-if="show(article.userLikes)" href="#" @click="addLike(article.id)"><i class="far fa-thumbs-up likes"></i></a>
-          <i v-else class="fas fa-thumbs-up likes"></i>
-          {{ article.likes }}
-          <a v-if="show(article.userDislikes)" href="#" @click="addDislike(article.id)"><i class="far fa-thumbs-down likes dis"></i></a>
-          <i v-else class="fas fa-thumbs-down likes dis"></i>
-          {{ article.dislikes }} 
+            <a v-if="canIVote(article.userLikes)" href="#" @click="addLike(article.id)"><i class="far fa-thumbs-up likes"></i></a>
+            <i v-else class="fas fa-thumbs-up likes"></i>
+            {{ article.likes }}
+            <a v-if="canIVote(article.userDislikes)" href="#" @click="addDislike(article.id)"><i class="far fa-thumbs-down likes dis"></i></a>
+            <i v-else class="fas fa-thumbs-down likes dis"></i>
+            {{ article.dislikes }} 
           </div>
-
-
-
         </b-card-text>
-        <span v-if="article.content" v-show="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(article.userId)"> 
+        <span v-if="article.content"> 
+          <span v-show="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(article.userId)">
           <Delete message="Supprimer" :id="parseInt(article.id)" content="blog"/>
           <b-button router-link :to="`blog/` + article.id" variant="secondary">Modifier</b-button>
-        </span><span v-else v-show="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(article.userId)">
+          </span>
+        <b-button router-link :to="`blog/` + article.id" variant="primary">Commentaires</b-button>
+        </span><span v-else>
+          <span v-show="$store.state.user.isAdmin || parseInt(localStorage.userId) === parseInt(article.userId)">
           <Delete message="Supprimer" :id="parseInt(article.id)" content="gif"/>
           <b-button router-link :to="`gif/` + article.id" variant="secondary">Modifier</b-button>
+          </span>
+        <b-button router-link :to="`gif/` + article.id" variant="primary">Commentaires</b-button>
         </span>
-        <b-button href="#" variant="primary" @click="decouverte(article.userId)">Go somewhere</b-button>
-
       </b-card>
     </div>
   </div>
@@ -70,6 +71,7 @@ export default {
       gif: [],
       myArray: [],
       canILike: 'true',
+      nbComment: [],
       articles: [{
         userLikes: [],
         canLike: 'true',
@@ -125,7 +127,19 @@ export default {
         })
         .catch(error => console.log(error))
     },
-    show(userLikes) {
+//    howManyComment(content, id) {
+//      axios
+//        .get('comment/' + content + '/' + id)
+//        .then(res => { 
+//          const result = res.data.length
+//          return console.log(result)
+//          console.log(this.$store.state.article)
+//})
+      //        .then(res => { this.nbComment.push(res.data.length) })
+//        .catch(err => console.log(err))
+//    },
+    // on verifie si l'utilisateur peut voté ou a déjà voté
+    canIVote(userLikes) {
       let i = 0
       while (parseInt(userLikes[i]) !== parseInt(localStorage.userId)){
         if(i > userLikes.length) {
@@ -140,14 +154,6 @@ export default {
     myArraySort: function() {
       return _.orderBy(this.myArray, 'createdAt', 'desc')
     },
-    show2: function() {
-      const myArray = this.myArray
-      let result = '';
-      for (let i = 0; i < myArray.length; i++) {
-        result += JSON.stringify(myArray[i].userLikes) + '<br>'
-      }
-      return result
-    }
   },
   watch: {
   },

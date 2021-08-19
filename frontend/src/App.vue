@@ -4,7 +4,7 @@
       <NavBar />
     </div>
     <div class="container mt-4 mb-4">
-      <transition name="fade" mode="out-in">
+      <transition name="fade-page" mode="out-in">
       <router-view/>
       </transition>
     </div>
@@ -55,7 +55,7 @@ export default {
 
 Vue.filter('formatDate', function(value) {
   if(value) {
-    return "Le " + moment(String(value)).format('MM/DD/YYYY') + " à " + moment(String(value)).format('hh:mm')
+    return moment(String(value)).format('MM/DD/YYYY') + " à " + moment(String(value)).format('hh:mm')
   }
 });
 
@@ -67,6 +67,12 @@ a {
 }
 .btn {
   margin-right: 6px;
+}
+.fade-page-enter-active, .fade-page-leave-active {
+  transition: opacity .1s, transform .1s;
+}
+.fade-page-enter, .fade-page-leave-active {
+  opacity: 0;
 }
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s, transform .5s;
