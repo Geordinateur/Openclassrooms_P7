@@ -7,7 +7,7 @@
       <h1>{{this.$route.name}}</h1>
       <div class="row h-100">
         <aside class="col-12 col-lg-3 order-lg-2">
-          <nav class="navbar navbar-expand navbar-light bg-light flex-md-column flex-row align-items-start pt-1 rounded">
+          <nav class="navbar navbar-expand navbar-light bg-light flex-md-column flex-row align-items-start pt-3 mb-3 rounded">
               <Login />
           </nav>
         </aside>
@@ -78,6 +78,12 @@ Vue.filter('formatDate', function(value) {
 </script>
 
 <style>
+body{
+  background-image: url('assets/logos/background.png');
+  background-attachment: scroll;
+  background-repeat: no-repeat;
+  background-position: center;
+}
 a {
   text-decoration: none;
 }
