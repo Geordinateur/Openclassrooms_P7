@@ -1,4 +1,4 @@
-# Bienvenue sur Groupomania
+# Créez un réseau social d’entreprise
 ## Projet 7 de la formation développeur web par Openclassrooms.
 ### Les techno utilisé
 J'ai utilisé pour Groupomania le frameworks **Vue**, qui est un framework **JavaScript**, et donc tourne sous **NodeJS**, avec quelques package, en voici la liste:
@@ -78,3 +78,9 @@ Pour la sécurité, les mot de passe enregistré dans la base de donnée sont to
 * La possibilité d'ajouter une **image**, ou un **article texte** au réseau.
 * La possibilité de **liker**, **disliker**, **commenter** ou **modifier** ces derniers.
 * Une **administration** à aussi été mise en place pour modérer les excès ou autres...
+
+### Compétences évaluées
+- Personnaliser le contenu envoyé à un client web
+- Authentifier un utilisateur et maintenir sa session
+- Gérer un stockage de données à l'aide de SQL
+- Implémenter un stockage de données sécurisé en utilisant SQL
